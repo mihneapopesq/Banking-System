@@ -74,6 +74,9 @@ public final class Main {
 
         ArrayNode output = objectMapper.createArrayNode();
 
+        Start start = new Start(inputData, output);
+        start.run(output);
+
         /*
          * TODO Implement your function here
          *
