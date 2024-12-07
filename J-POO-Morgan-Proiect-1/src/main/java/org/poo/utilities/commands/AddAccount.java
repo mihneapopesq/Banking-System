@@ -1,35 +1,36 @@
 package org.poo.utilities.commands;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.NullNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.fileio.CommandInput;
-import org.poo.fileio.UserInput;
+import org.poo.utilities.users.User;
+import org.poo.utilities.users.Account;
+import org.poo.utils.Utils;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 
 public class AddAccount {
-    public void addAccount(ArrayList<UserInput> users, CommandInput commandInput) {
+    public void addAccount(User[] users, CommandInput commandInput) {
         ObjectMapper objectMapper = new ObjectMapper();
 
-        for (UserInput user : users) {
-            if(user.getEmail().equals(commandInput.getEmail())) {
-                if(!commandInput.getCurrency().isEmpty()) {
+        for (User user : users) {
+           if(user.getUser().getEmail().equals(commandInput.getEmail())) {
+
+               Account newAccount = new Account();
+               Account[] existingAccounts = user.getAccounts();
+               Account[] updatedAccounts = Arrays.copyOf(existingAccounts, existingAccounts.length + 1);
+
+               // fa un constructor
+               newAccount.setAccountType(commandInput.getAccountType());
+               newAccount.setCurrency(commandInput.getCurrency());
+               newAccount.setIban(Utils.generateIBAN());
 
 
 
-//                    ObjectNode account = objectMapper.createObjectNode();
-//                    account.put("currency", commandInput.getCurrency());
-                } else if(!commandInput.getAccountType().isEmpty()) {
-//                    ObjectNode account = objectMapper.createObjectNode();
-//                    account.put("accountType", commandInput.getAccountType());
+               updatedAccounts[existingAccounts.length] = newAccount;
+               user.setAccounts(updatedAccounts);
 
-                } else if(commandInput.getAmount() > 0) {
-//                    ObjectNode account = objectMapper.createObjectNode();
-//                    account.put("amount", commandInput.getAmount());
-                }
-                break;
-            }
+               break;
+           }
         }
     }
 }
