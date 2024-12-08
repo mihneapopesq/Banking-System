@@ -8,8 +8,10 @@ import org.poo.utilities.users.Account;
 import org.poo.utilities.users.User;
 import org.poo.utilities.users.Card;
 
+import java.util.ArrayList;
+
 public class PrintUsers {
-    public void printUsers(final ArrayNode output, final User[] users,
+    public void printUsers(final ArrayNode output, final ArrayList<User> users,
                            final ObjectMapper objectMapper,
                            final ObjectNode commandNode,
                            final CommandInput command) {
@@ -27,6 +29,9 @@ public class PrintUsers {
 
             for (Account account : user.getAccounts()) {
                 ObjectNode accountNode = objectMapper.createObjectNode();
+
+
+
                 accountNode.put("IBAN", account.getIban());
                 accountNode.put("balance", account.getBalance());
                 accountNode.put("currency", account.getCurrency());

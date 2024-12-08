@@ -5,46 +5,42 @@ import org.poo.fileio.CommandInput;
 import org.poo.fileio.ObjectInput;
 import org.poo.fileio.UserInput;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.poo.utilities.commands.AddAccount;
-import org.poo.utilities.commands.AddFunds;
-import org.poo.utilities.commands.CreateCard;
-import org.poo.utilities.commands.PrintUsers;
+import org.poo.utilities.commands.*;
 import org.poo.utilities.users.Card;
 import org.poo.utilities.users.User;
 import java.util.Arrays;
 import java.util.ArrayList;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.poo.utilities.users.Account;
-
+import org.poo.utils.Utils;
 
 
 public class Start {
 
-    private User[] users;
+    private ArrayList<User> users;
     private ArrayList<CommandInput> commands;
 
     public Start(ObjectInput inputData, ArrayNode output) {
+        users = new ArrayList<>();
 
-        // set the users in Users (first name, last name, email)
-        users = new User[inputData.getUsers().length];
-        for (int i = 0; i < inputData.getUsers().length; i++) {
-            UserInput userInput = inputData.getUsers()[i];
+        for (UserInput userInput : inputData.getUsers()) {
             User user = new User();
             user.setUser(userInput);
-            user.setAccounts(new Account[0]);
-            users[i] = user;
-
+            user.setAccounts(new ArrayList<>());
+            users.add(user);
         }
+
         // set the commands from the input
         commands = new ArrayList<>(Arrays.asList(inputData.getCommands()));
-
-
     }
 
     public void run(ArrayNode output) {
         ObjectMapper objectMapper = new ObjectMapper();
-        for(CommandInput command : commands)  {
 
+        Utils.resetRandom();
+
+
+        for(CommandInput command : commands)  {
             ObjectNode commandNode = objectMapper.createObjectNode();
 
             if(command.getCommand().equals("addAccount")) {
@@ -59,6 +55,15 @@ public class Start {
             } else if(command.getCommand().equals("addFunds")) {
                 AddFunds addFunds = new AddFunds();
                 addFunds.AddFunds(users, command);
+            } else if(command.getCommand().equals("deleteAccount")) {
+                DeleteAccount deleteAccount = new DeleteAccount();
+                deleteAccount.deleteAccount(users, command, output, objectMapper, commandNode);
+            } else if(command.getCommand().equals("createOneTimeCard")) {
+                CreateOneTimeCard createOneTimeCard = new CreateOneTimeCard();
+                createOneTimeCard.createOneTimeCard(users, command);
+            } else if(command.getCommand().equals("deleteCard")) {
+                DeleteCard deleteCard = new DeleteCard();
+                deleteCard.deleteCard(users, command);
             }
         }
     }

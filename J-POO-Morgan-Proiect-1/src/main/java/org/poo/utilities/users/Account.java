@@ -1,17 +1,21 @@
 package org.poo.utilities.users;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+
+import java.util.ArrayList;
+
 public class Account {
-    private Card[] cards;
+    private ArrayList<Card> cards;
     private String iban;
     private double balance;
     private String currency;
     private String accountType;
 
-    public Card[] getCards() {
+    public ArrayList<Card> getCards() {
         return cards;
     }
 
-    public void setCards(Card[] cards) {
+    public void setCards(ArrayList<Card> cards) {
         this.cards = cards;
     }
 

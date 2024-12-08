@@ -3,6 +3,7 @@ package org.poo.utilities.users;
 public class Card {
     private String cardNumber;
     private String status;
+    private int isOneTimeCard;
 
     public String getCardNumber() {
         return cardNumber;
@@ -18,5 +19,13 @@ public class Card {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public int getIsOneTimeCard() {
+        return isOneTimeCard;
+    }
+
+    public void setIsOneTimeCard(int isOneTimeCard) {
+        this.isOneTimeCard = isOneTimeCard;
     }
 }
