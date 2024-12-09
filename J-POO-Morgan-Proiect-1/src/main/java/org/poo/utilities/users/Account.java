@@ -8,6 +8,7 @@ public class Account {
     private ArrayList<Card> cards;
     private String iban;
     private double balance;
+    private double minBalance;
     private String currency;
     private String accountType;
 
@@ -49,5 +50,13 @@ public class Account {
 
     public void setAccountType(String accountType) {
         this.accountType = accountType;
+    }
+
+    public double getMinBalance() {
+        return minBalance;
+    }
+
+    public void setMinBalance(double minBalance) {
+        this.minBalance = minBalance;
     }
 }

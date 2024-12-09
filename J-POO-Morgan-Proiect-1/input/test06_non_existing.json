@@ -97,7 +97,7 @@
             "timestamp": 11,
             "description": "Online payment",
             "commerciant": "H&M",
-            "email": "Nicole_Daniels@outlook.us"
+                "email": "Nicole_Daniels@outlook.us"
         },
         {
             "command": "printUsers",

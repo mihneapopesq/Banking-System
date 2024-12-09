@@ -21,6 +21,10 @@ public class AddAccount {
                newAccount.setCurrency(commandInput.getCurrency());
                newAccount.setIban(generatedIBAN);
                newAccount.setBalance(0);
+               newAccount.setMinBalance(0);
+
+
+
                newAccount.setCards(new ArrayList<>());
 
                ArrayList<Account> accounts = user.getAccounts();
