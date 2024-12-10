@@ -11,7 +11,8 @@ import java.util.ArrayList;
 
 public class DeleteAccount {
     public void deleteAccount(final ArrayList<User> users, final CommandInput commandInput,
-                              final ArrayNode output, final ObjectMapper objectMapper, final ObjectNode commandNode) {
+                              final ArrayNode output, final ObjectMapper objectMapper,
+                              final ObjectNode commandNode) {
 
         boolean accountDeleted = false;
 
@@ -19,7 +20,7 @@ public class DeleteAccount {
             if (user.getUser().getEmail().equals(commandInput.getEmail())) {
                 for (int i = user.getAccounts().size() - 1; i >= 0; i--) {
                     Account acc = user.getAccounts().get(i);
-                    if (acc.getIban().equals(commandInput.getAccount())) {
+                    if (acc.getIban().equals(commandInput.getAccount()) && acc.getBalance() == 0) {
                         user.getAccounts().remove(i);
                         accountDeleted = true;
                     }
@@ -33,6 +34,8 @@ public class DeleteAccount {
 
         if (accountDeleted) {
             outputNode.put("success", "Account deleted");
+        } else {
+            outputNode.put("error", "Account couldn't be deleted - see org.poo.transactions for details");
         }
 
         outputNode.put("timestamp", commandInput.getTimestamp());

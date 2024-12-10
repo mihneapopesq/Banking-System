@@ -11,6 +11,7 @@ public class Account {
     private double minBalance;
     private String currency;
     private String accountType;
+    private String alias;
 
     public ArrayList<Card> getCards() {
         return cards;
@@ -58,5 +59,13 @@ public class Account {
 
     public void setMinBalance(double minBalance) {
         this.minBalance = minBalance;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 }

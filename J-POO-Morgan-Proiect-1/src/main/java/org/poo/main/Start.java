@@ -7,15 +7,14 @@ import org.poo.fileio.ObjectInput;
 import org.poo.fileio.UserInput;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.utilities.commands.*;
-import org.poo.utilities.users.Card;
-import org.poo.utilities.users.User;
+import org.poo.utilities.users.*;
+
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.poo.utilities.users.Account;
 import org.poo.utils.Utils;
 
 
@@ -24,7 +23,7 @@ public class Start {
     private ArrayList<User> users;
     private ArrayList<CommandInput> commands;
     private ArrayList<ExchangeInput> exchangeData;
-    private Map<String, Map<String, Double>> currencyGraph;
+    private CurrencyGraph currencyGraph;
 
     public Start(ObjectInput inputData, ArrayNode output) {
         users = new ArrayList<>();
@@ -33,6 +32,9 @@ public class Start {
             User user = new User();
             user.setUser(userInput);
             user.setAccounts(new ArrayList<>());
+
+            user.setTransactions(new ArrayList<>());
+
             users.add(user);
         }
 
@@ -48,8 +50,8 @@ public class Start {
 
             exchangeData.add(exchange);
         }
-
-        buildCurrencyGraph();
+        currencyGraph = new CurrencyGraph();
+        currencyGraph.buildCurrencyGraph(exchangeData);
 
         // set the commands from the input
         commands = new ArrayList<>(Arrays.asList(inputData.getCommands()));
@@ -91,23 +93,19 @@ public class Start {
             } else if(command.getCommand().equals("payOnline")) {
                 PayOnline payOnline = new PayOnline();
                 payOnline.payOnline(users, command, currencyGraph, commandNode, objectMapper, output);
+            } else if(command.getCommand().equals("sendMoney")) {
+                SendMoney sendMoney = new SendMoney();
+                sendMoney.sendMoney(users, command, currencyGraph);
+            } else if(command.getCommand().equals("setAlias")) {
+                SetAlias setAlias = new SetAlias();
+                setAlias.setAlias(users, command);
+            } else if(command.getCommand().equals("printTransactions")) {
+                PrintTransactions printTransactions = new PrintTransactions();
+                printTransactions.printTransactions(output, users, objectMapper, commandNode, command);
+            } else if(command.getCommand().equals("checkCardStatus")) {
+                CheckCardStatus checkCardStatus = new CheckCardStatus();
+                checkCardStatus.checkCardStatus(users, command, output, commandNode, objectMapper);
             }
-        }
-    }
-
-    public void buildCurrencyGraph() {
-        currencyGraph = new HashMap<>();
-
-        for (ExchangeInput exchange : exchangeData) {
-            String from = exchange.getFrom();
-            String to = exchange.getTo();
-            double rate = exchange.getRate();
-
-            currencyGraph.putIfAbsent(from, new HashMap<>());
-            currencyGraph.get(from).put(to, rate);
-
-            currencyGraph.putIfAbsent(to, new HashMap<>());
-            currencyGraph.get(to).put(from, 1 / rate);
         }
     }
 

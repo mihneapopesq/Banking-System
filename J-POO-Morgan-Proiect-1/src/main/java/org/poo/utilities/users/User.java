@@ -6,9 +6,9 @@ import java.util.ArrayList;
 
 public class User {
     private UserInput user;
-//    private Account[] accounts;
-
+    private ArrayList<Transaction> transactions;
     private ArrayList<Account> accounts;
+
 
     public User() {
         this.accounts = new ArrayList<>();
@@ -35,11 +35,11 @@ public class User {
         this.accounts = accounts;
     }
 
-    //    public Account[] getAccounts() {
-//        return accounts;
-//    }
-//
-//    public void setAccounts(Account[] accounts) {
-//        this.accounts = accounts;
-//    }
+    public ArrayList<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(ArrayList<Transaction> transactions) {
+        this.transactions = transactions;
+    }
 }

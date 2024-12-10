@@ -1,6 +1,7 @@
 package org.poo.utilities.commands;
 
 import org.poo.fileio.CommandInput;
+import org.poo.utilities.users.Transaction;
 import org.poo.utilities.users.User;
 import org.poo.utilities.users.Account;
 import org.poo.utils.Utils;
@@ -20,9 +21,16 @@ public class AddAccount {
                newAccount.setAccountType(commandInput.getAccountType());
                newAccount.setCurrency(commandInput.getCurrency());
                newAccount.setIban(generatedIBAN);
+
+
                newAccount.setBalance(0);
                newAccount.setMinBalance(0);
 
+               Transaction transaction = new Transaction();
+               transaction.setDescription("New account created");
+               transaction.setTimestamp(commandInput.getTimestamp());
+
+               user.getTransactions().add(transaction);
 
 
                newAccount.setCards(new ArrayList<>());
