@@ -114,6 +114,9 @@ public class Start {
             } else if(command.getCommand().equals("splitPayment")) {
                 SplitPayment splitPayment = new SplitPayment();
                 splitPayment.splitPayment(users, command, currencyGraph, transactions);
+            } else if(command.getCommand().equals("report")) {
+                Report report = new Report();
+                report.report(output, users, objectMapper, commandNode, command, transactions);
             }
         }
     }

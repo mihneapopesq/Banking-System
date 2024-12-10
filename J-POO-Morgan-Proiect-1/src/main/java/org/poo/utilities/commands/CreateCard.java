@@ -32,7 +32,7 @@ public class CreateCard {
                         transaction.setCardNumber(newCard.getCardNumber());
                         transaction.setCardHolder(user.getUser().getEmail());
                         transaction.setEmail(user.getUser().getEmail());
-
+                        transaction.setReportIban(account.getIban());
                         transactions.add(transaction);
                         account.getCards().add(account.getCards().size() ,newCard);
                         break;

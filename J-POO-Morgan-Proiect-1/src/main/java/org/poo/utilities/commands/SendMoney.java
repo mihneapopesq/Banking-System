@@ -49,7 +49,7 @@ public class SendMoney {
             transaction.setTimestamp(commandInput.getTimestamp());
 
             transaction.setEmail(senderUser.getUser().getEmail());
-
+            transaction.setReportIban(senderAccount.getIban());
             transactions.add(transaction);
 
             return;
@@ -61,6 +61,7 @@ public class SendMoney {
             transaction.setDescription("Insufficient funds");
             transaction.setTimestamp(commandInput.getTimestamp());
             transaction.setEmail(senderUser.getUser().getEmail());
+            transaction.setReportIban(senderAccount.getIban());
             transactions.add(transaction);
 
             return;
@@ -80,7 +81,7 @@ public class SendMoney {
         transaction.setSenderIBAN(commandInput.getAccount());
         transaction.setReceiverIBAN(commandInput.getReceiver());
         transaction.setEmail(senderUser.getUser().getEmail());
-
+        transaction.setReportIban(senderAccount.getIban());
         transactions.add(transaction);
 
     }

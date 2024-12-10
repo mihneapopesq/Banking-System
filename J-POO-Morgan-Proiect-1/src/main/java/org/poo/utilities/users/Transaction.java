@@ -17,7 +17,16 @@ public class Transaction {
     private double amountSpent;
     private String email;
     private List<String> accounts;
+    private String reportIban;
 
+
+    public String getReportIban() {
+        return reportIban;
+    }
+
+    public void setReportIban(String reportIban) {
+        this.reportIban = reportIban;
+    }
 
     public String getEmail() {
         return email;

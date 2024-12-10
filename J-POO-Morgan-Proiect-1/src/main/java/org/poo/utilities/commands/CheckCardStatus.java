@@ -28,6 +28,7 @@ public class CheckCardStatus {
                             transaction.setDescription("You have reached the minimum amount of funds, the card will be frozen");
                             transaction.setEmail(user.getUser().getEmail());
                             transactions.add(transaction);
+                            transaction.setReportIban(account.getIban());
 
                             card.setIsFrozen(1);
                             card.setStatus("frozen");

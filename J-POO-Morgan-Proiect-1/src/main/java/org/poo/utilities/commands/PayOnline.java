@@ -30,6 +30,7 @@ public class PayOnline {
                                 transaction.setTimestamp(commandInput.getTimestamp());
                                 transaction.setDescription("The card is frozen");
                                 transaction.setEmail(user.getUser().getEmail());
+                                transaction.setReportIban(account.getIban());
                                 transactions.add(transaction);
 
                                 return ;
@@ -46,6 +47,7 @@ public class PayOnline {
                                 transaction.setTimestamp(commandInput.getTimestamp());
                                 transaction.setDescription("Insufficient funds");
                                 transaction.setEmail(user.getUser().getEmail());
+                                transaction.setReportIban(account.getIban());
                                 transactions.add(transaction);
 
                                 return ;
@@ -60,6 +62,8 @@ public class PayOnline {
                             transaction.setDescription("Card payment");
                             transaction.setCommerciant(commandInput.getCommerciant());
                             transaction.setEmail(user.getUser().getEmail());
+                            transaction.setReportIban(account.getIban());
+
                             transactions.add(transaction);
 
                             return;

@@ -25,7 +25,7 @@ public class SplitPayment {
                         userTransaction.setAccounts(accounts);
                         userTransaction.setTimestamp(commandInput.getTimestamp());
                         userTransaction.setEmail(user.getUser().getEmail());
-
+                        userTransaction.setReportIban(account.getIban());
                         transactions.add(userTransaction);
 
                         double rightAmount = graph.convertCurrency(account.getCurrency(), commandInput.getCurrency(), amountPerAccount);

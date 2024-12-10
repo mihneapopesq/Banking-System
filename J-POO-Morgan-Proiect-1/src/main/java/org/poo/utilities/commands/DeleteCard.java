@@ -26,7 +26,7 @@ public class DeleteCard {
                             transaction.setCardNumber(card.getCardNumber());
                             transaction.setCardHolder(user.getUser().getEmail());
                             transaction.setEmail(user.getUser().getEmail());
-
+                            transaction.setReportIban(account.getIban());
                             transactions.add(transaction);
 
                             return;

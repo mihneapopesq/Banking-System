@@ -31,6 +31,7 @@ public class AddAccount {
                transaction.setDescription("New account created");
                transaction.setTimestamp(commandInput.getTimestamp());
                transaction.setEmail(user.getUser().getEmail());
+               transaction.setReportIban(generatedIBAN);
 
 
                transactions.add(transaction);
