@@ -3,13 +3,14 @@ package org.poo.utilities.commands;
 import org.poo.fileio.CommandInput;
 import org.poo.utilities.users.Account;
 import org.poo.utilities.users.Card;
+import org.poo.utilities.users.Transaction;
 import org.poo.utilities.users.User;
 import org.poo.utils.Utils;
-
 import java.util.ArrayList;
 
 public class CreateOneTimeCard {
-    public void createOneTimeCard(ArrayList<User> users, CommandInput commandInput) {
+    public void createOneTimeCard(ArrayList<User> users, CommandInput commandInput,
+                                  ArrayList<Transaction> transactions) {
 
         for (User user : users) {
 
@@ -24,13 +25,21 @@ public class CreateOneTimeCard {
                         newCard.setStatus("active");
                         newCard.setIsOneTimeCard(1);
 
-                        account.getCards().add(account.getCards().size() ,newCard);
+                        Transaction transaction = new Transaction();
+                        transaction.setDescription("New card created");
+                        transaction.setTimestamp(commandInput.getTimestamp());
+                        transaction.setIban(account.getIban());
+                        transaction.setCardNumber(newCard.getCardNumber());
+                        transaction.setCardHolder(user.getUser().getEmail());
+                        transaction.setEmail(user.getUser().getEmail());
 
+                        transactions.add(transaction);
+
+                        account.getCards().add(account.getCards().size() ,newCard);
 
                         break;
                     }
                 }
-
                 break;
             }
         }

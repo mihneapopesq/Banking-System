@@ -11,7 +11,8 @@ import java.util.*;
 public class PayOnline {
     public void payOnline(ArrayList<User> users, CommandInput commandInput,
                           CurrencyGraph currencyGraph,
-                          ObjectNode commandNode, ObjectMapper objectMapper, ArrayNode output) {
+                          ObjectNode commandNode, ObjectMapper objectMapper, ArrayNode output,
+                          ArrayList<Transaction> transactions) {
         String targetEmail = commandInput.getEmail();
         String targetCardNumber = commandInput.getCardNumber();
         String paymentCurrency = commandInput.getCurrency();
@@ -28,7 +29,9 @@ public class PayOnline {
                                 Transaction transaction = new Transaction();
                                 transaction.setTimestamp(commandInput.getTimestamp());
                                 transaction.setDescription("The card is frozen");
-                                user.getTransactions().add(transaction);
+                                transaction.setEmail(user.getUser().getEmail());
+                                transactions.add(transaction);
+
                                 return ;
                             }
 
@@ -42,7 +45,8 @@ public class PayOnline {
                                 Transaction transaction = new Transaction();
                                 transaction.setTimestamp(commandInput.getTimestamp());
                                 transaction.setDescription("Insufficient funds");
-                                user.getTransactions().add(transaction);
+                                transaction.setEmail(user.getUser().getEmail());
+                                transactions.add(transaction);
 
                                 return ;
                             }
@@ -55,8 +59,8 @@ public class PayOnline {
                             transaction.setTimestamp(commandInput.getTimestamp());
                             transaction.setDescription("Card payment");
                             transaction.setCommerciant(commandInput.getCommerciant());
-
-                            user.getTransactions().add(transaction);
+                            transaction.setEmail(user.getUser().getEmail());
+                            transactions.add(transaction);
 
                             return;
                         }

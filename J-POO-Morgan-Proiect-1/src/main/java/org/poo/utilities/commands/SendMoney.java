@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class SendMoney {
     public void sendMoney(final ArrayList<User> users, final CommandInput commandInput,
-                          final CurrencyGraph currencyGraph){
+                          final CurrencyGraph currencyGraph, final ArrayList<Transaction> transactions) {
 
         Account senderAccount = null;
         User senderUser = null;
@@ -43,10 +43,26 @@ public class SendMoney {
 
 
         if(senderAccount.getBalance() < amount) {
+
+            Transaction transaction = new Transaction();
+            transaction.setDescription("Insufficient funds");
+            transaction.setTimestamp(commandInput.getTimestamp());
+
+            transaction.setEmail(senderUser.getUser().getEmail());
+
+            transactions.add(transaction);
+
             return;
         }
 
         if(senderAccount.getMinBalance() > senderAccount.getBalance() - amount) {
+
+            Transaction transaction = new Transaction();
+            transaction.setDescription("Insufficient funds");
+            transaction.setTimestamp(commandInput.getTimestamp());
+            transaction.setEmail(senderUser.getUser().getEmail());
+            transactions.add(transaction);
+
             return;
         }
 
@@ -63,10 +79,9 @@ public class SendMoney {
         transaction.setDescription(commandInput.getDescription());
         transaction.setSenderIBAN(commandInput.getAccount());
         transaction.setReceiverIBAN(commandInput.getReceiver());
+        transaction.setEmail(senderUser.getUser().getEmail());
 
-        senderUser.getTransactions().add(transaction);
-
-
+        transactions.add(transaction);
 
     }
 }

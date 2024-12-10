@@ -8,38 +8,27 @@ import org.poo.utilities.users.Transaction;
 import org.poo.utilities.users.User;
 
 import java.util.ArrayList;
-import java.util.function.DoubleFunction;
 
 public class PrintTransactions {
     public void printTransactions(final ArrayNode output, final ArrayList<User> users,
                                   final ObjectMapper objectMapper,
                                   final ObjectNode commandNode,
-                                  final CommandInput commandInput) {
-        User foundUser = null;
-        for(User user : users) {
-            if(user.getUser().getEmail().equals(commandInput.getEmail())) {
-                foundUser = user;
-                break;
-            }
-        }
-
-        if(foundUser == null) {
-            return;
-        }
-
+                                  final CommandInput commandInput, final ArrayList<Transaction> transactions) {
 
         commandNode.put("command", commandInput.getCommand());
         commandNode.put("timestamp", commandInput.getTimestamp());
 
         ArrayNode outputArray = objectMapper.createArrayNode();
 
+        for(Transaction transaction : transactions) {
 
-        if(foundUser.getTransactions() != null) {
-
-
-            for(Transaction transaction : foundUser.getTransactions()) {
+            if(transaction.getEmail() == null) {
 
 
+                return;
+            }
+
+            if(transaction.getEmail().equals(commandInput.getEmail())) {
 
                 ObjectNode transactionNode = objectMapper.createObjectNode();
                 transactionNode.put("timestamp", transaction.getTimestamp());
@@ -81,8 +70,26 @@ public class PrintTransactions {
                     transactionNode.put("amount", transaction.getAmountSpent());
                 }
 
+                if (transaction.getAccounts() != null) {
 
-                
+                    transactionNode.remove("description");
+                    transactionNode.remove("amount");
+                    transactionNode.remove("currency");
+                    transactionNode.remove("accounts");
+
+                    String formattedAmount = String.format("%.2f", transaction.getAmount());
+
+                    transactionNode.put("amount", transaction.getAmountSpent());
+                    transactionNode.put("currency", transaction.getCurrency());
+                    transactionNode.put("description", "Split payment of " + formattedAmount + " " + transaction.getCurrency());
+
+                    ArrayNode accountsArray = objectMapper.createArrayNode();
+                    for (String account : transaction.getAccounts()) {
+                        accountsArray.add(account);
+                    }
+                    transactionNode.set("involvedAccounts", accountsArray);
+                }
+
                 outputArray.add(transactionNode);
             }
         }

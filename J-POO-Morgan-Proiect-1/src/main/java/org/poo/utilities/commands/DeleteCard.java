@@ -9,7 +9,8 @@ import org.poo.utilities.users.User;
 import java.util.ArrayList;
 
 public class DeleteCard {
-    public void deleteCard(final ArrayList<User> users, final CommandInput commandInput) {
+    public void deleteCard(final ArrayList<User> users, final CommandInput commandInput,
+                           final ArrayList<Transaction> transactions) {
         for (User user : users) {
             if (user.getUser().getEmail().equals(commandInput.getEmail())) {
                 for (Account account : user.getAccounts()) {
@@ -24,8 +25,9 @@ public class DeleteCard {
                             transaction.setIban(account.getIban());
                             transaction.setCardNumber(card.getCardNumber());
                             transaction.setCardHolder(user.getUser().getEmail());
+                            transaction.setEmail(user.getUser().getEmail());
 
-                            user.getTransactions().add(transaction);
+                            transactions.add(transaction);
 
                             return;
                         }

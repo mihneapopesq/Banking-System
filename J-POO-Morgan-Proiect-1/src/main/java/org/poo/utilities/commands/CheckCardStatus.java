@@ -8,13 +8,14 @@ import org.poo.utilities.users.Account;
 import org.poo.utilities.users.Card;
 import org.poo.utilities.users.Transaction;
 import org.poo.utilities.users.User;
-import org.poo.utils.Utils;
+
 
 import java.util.ArrayList;
 
 public class CheckCardStatus {
     public void checkCardStatus(ArrayList<User> users, CommandInput commandInput,
-                                ArrayNode output, ObjectNode commandNode, ObjectMapper objectMapper) {
+                                ArrayNode output, ObjectNode commandNode, ObjectMapper objectMapper,
+                                ArrayList<Transaction> transactions) {
         for(User user : users) {
             for(Account account : user.getAccounts()) {
                 for(Card card : account.getCards()) {
@@ -25,7 +26,9 @@ public class CheckCardStatus {
                             Transaction transaction = new Transaction();
                             transaction.setTimestamp(commandInput.getTimestamp());
                             transaction.setDescription("You have reached the minimum amount of funds, the card will be frozen");
-                            user.getTransactions().add(transaction);
+                            transaction.setEmail(user.getUser().getEmail());
+                            transactions.add(transaction);
+
                             card.setIsFrozen(1);
                             card.setStatus("frozen");
                             return ;

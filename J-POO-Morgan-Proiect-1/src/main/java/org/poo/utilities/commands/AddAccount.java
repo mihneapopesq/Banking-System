@@ -9,7 +9,8 @@ import org.poo.utils.Utils;
 import java.util.ArrayList;
 
 public class AddAccount {
-    public void addAccount(ArrayList<User> users, CommandInput commandInput) {
+    public void addAccount(ArrayList<User> users, CommandInput commandInput,
+                           ArrayList<Transaction> transactions) {
         for (User user : users) {
            if(user.getUser().getEmail().equals(commandInput.getEmail())) {
 
@@ -29,9 +30,10 @@ public class AddAccount {
                Transaction transaction = new Transaction();
                transaction.setDescription("New account created");
                transaction.setTimestamp(commandInput.getTimestamp());
+               transaction.setEmail(user.getUser().getEmail());
 
-               user.getTransactions().add(transaction);
 
+               transactions.add(transaction);
 
                newAccount.setCards(new ArrayList<>());
 

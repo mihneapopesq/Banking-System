@@ -1,5 +1,7 @@
 package org.poo.utilities.users;
 
+import java.util.List;
+
 public class Transaction {
     private String description;
     private int timestamp;
@@ -13,7 +15,25 @@ public class Transaction {
     private String cardHolder;
     private String commerciant;
     private double amountSpent;
+    private String email;
+    private List<String> accounts;
 
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public List<String> getAccounts() {
+        return accounts;
+    }
+
+    public void setAccounts(List<String> accounts) {
+        this.accounts = accounts;
+    }
 
     public double getAmountSpent() {
         return amountSpent;

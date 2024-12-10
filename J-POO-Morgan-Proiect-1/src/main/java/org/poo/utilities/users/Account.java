@@ -1,6 +1,5 @@
 package org.poo.utilities.users;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import java.util.ArrayList;
 
@@ -12,6 +11,15 @@ public class Account {
     private String currency;
     private String accountType;
     private String alias;
+    private double interestRate;
+
+    public double getInterestRate() {
+        return interestRate;
+    }
+
+    public void setInterestRate(double interestRate) {
+        this.interestRate = interestRate;
+    }
 
     public ArrayList<Card> getCards() {
         return cards;
