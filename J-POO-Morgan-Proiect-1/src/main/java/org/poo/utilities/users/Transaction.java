@@ -18,7 +18,15 @@ public class Transaction {
     private String email;
     private List<String> accounts;
     private String reportIban;
+    private String error;
 
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+    }
 
     public String getReportIban() {
         return reportIban;

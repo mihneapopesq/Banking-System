@@ -23,6 +23,8 @@ public class AddAccount {
                newAccount.setCurrency(commandInput.getCurrency());
                newAccount.setIban(generatedIBAN);
 
+               newAccount.setInterestRate(commandInput.getInterestRate());
+
 
                newAccount.setBalance(0);
                newAccount.setMinBalance(0);

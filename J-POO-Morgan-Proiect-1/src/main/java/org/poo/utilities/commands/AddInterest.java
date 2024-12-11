@@ -9,8 +9,8 @@ import org.poo.utilities.users.User;
 
 import java.util.ArrayList;
 
-public class ChangeInterestRate {
-    public void changeInterestRate(final ArrayNode output, final ArrayList<User> users,
+public class AddInterest {
+    public void addInterest(final ArrayNode output, final ArrayList<User> users,
                                    final ObjectMapper objectMapper,
                                    final ObjectNode commandNode,
                                    final CommandInput commandInput) {
@@ -29,10 +29,12 @@ public class ChangeInterestRate {
                         return;
                     }
 
-                    account.setInterestRate(commandInput.getInterestRate());
+//                    account.setInterestRate(commandInput.getInterestRate());
+
+                    account.setBalance(account.getBalance() + account.getBalance() * account.getInterestRate());
+
                 }
             }
         }
-
     }
 }

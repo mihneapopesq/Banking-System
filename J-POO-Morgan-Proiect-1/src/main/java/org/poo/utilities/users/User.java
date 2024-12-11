@@ -4,6 +4,7 @@ import org.poo.fileio.UserInput;
 
 import java.util.ArrayList;
 
+
 public class User {
     private UserInput user;
     private ArrayList<Transaction> transactions;

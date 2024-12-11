@@ -13,6 +13,10 @@ public class SplitPayment {
         int numberOfAccounts = accounts.size();
         double amountPerAccount = commandInput.getAmount() / numberOfAccounts;
 
+
+
+        boolean continueTransaction = true;
+
         for (String iban : accounts) {
             for (User user : users) {
                 for (Account account : user.getAccounts()) {
@@ -29,6 +33,22 @@ public class SplitPayment {
                         transactions.add(userTransaction);
 
                         double rightAmount = graph.convertCurrency(account.getCurrency(), commandInput.getCurrency(), amountPerAccount);
+
+                        if(account.getMinBalance() > account.getBalance() - rightAmount) {
+                            Transaction transaction = new Transaction();
+                            transaction.setDescription("Insufficient funds");
+                            transaction.setTimestamp(commandInput.getTimestamp());
+                            transaction.setEmail(user.getUser().getEmail());
+                            transaction.setReportIban(account.getIban());
+//                            transaction.setError(1);
+
+                            transactions.add(transaction);
+
+                            continueTransaction = false;
+
+                            return;
+                        }
+
                         account.setBalance(account.getBalance() - rightAmount);
                     }
                 }

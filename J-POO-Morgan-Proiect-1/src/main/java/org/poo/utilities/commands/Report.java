@@ -33,6 +33,11 @@ public class Report {
         }
 
         if (foundAccount == null) {
+            ObjectNode errorNode = objectMapper.createObjectNode();
+            errorNode.put("description", "Account not found");
+            errorNode.put("timestamp", commandInput.getTimestamp());
+            commandNode.set("output", errorNode);
+            output.add(commandNode);
             return;
         }
 

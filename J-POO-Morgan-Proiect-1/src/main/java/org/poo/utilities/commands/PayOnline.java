@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.fileio.CommandInput;
 import org.poo.utilities.users.*;
+import org.poo.utils.Utils;
 
 import java.util.*;
 
@@ -65,6 +66,10 @@ public class PayOnline {
                             transaction.setReportIban(account.getIban());
 
                             transactions.add(transaction);
+
+                            if(card.getIsOneTimeCard() == 1) {
+                                card.setCardNumber(Utils.generateCardNumber());
+                            }
 
                             return;
                         }

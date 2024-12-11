@@ -110,16 +110,20 @@ public class Start {
                 checkCardStatus.checkCardStatus(users, command, output, commandNode, objectMapper, transactions);
             } else if(command.getCommand().equals("changeInterestRate")) {
                 ChangeInterestRate changeInterestRate = new ChangeInterestRate();
-                changeInterestRate.changeInterestRate(users, command);
+                changeInterestRate.changeInterestRate(output, users, objectMapper, commandNode, command);
             } else if(command.getCommand().equals("splitPayment")) {
                 SplitPayment splitPayment = new SplitPayment();
                 splitPayment.splitPayment(users, command, currencyGraph, transactions);
             } else if(command.getCommand().equals("report")) {
                 Report report = new Report();
                 report.report(output, users, objectMapper, commandNode, command, transactions);
+            } else if(command.getCommand().equals("spendingsReport")) {
+                SpendingsReport spendingsReport = new SpendingsReport();
+                spendingsReport.spendingsReport(output, users, objectMapper, commandNode, command, transactions);
+            } else if(command.getCommand().equals("addInterest")) {
+                AddInterest addInterestRate = new AddInterest();
+                addInterestRate.addInterest(output, users, objectMapper, commandNode, command);
             }
         }
     }
-
-
 }
