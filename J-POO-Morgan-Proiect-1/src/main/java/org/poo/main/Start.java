@@ -83,7 +83,7 @@ public class Start {
                 addFunds.AddFunds(users, command);
             } else if(command.getCommand().equals("deleteAccount")) {
                 DeleteAccount deleteAccount = new DeleteAccount();
-                deleteAccount.deleteAccount(users, command, output, objectMapper, commandNode);
+                deleteAccount.deleteAccount(users, command, output, objectMapper, commandNode, transactions);
             } else if(command.getCommand().equals("createOneTimeCard")) {
                 CreateOneTimeCard createOneTimeCard = new CreateOneTimeCard();
                 createOneTimeCard.createOneTimeCard(users, command, transactions);

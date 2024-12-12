@@ -24,11 +24,26 @@ public class PrintTransactions {
 
             if(transaction.getEmail() == null) {
 
-
                 return;
             }
 
-            if(transaction.getEmail().equals(commandInput.getEmail())) {
+            boolean canContinue = false;
+
+            if(transaction.getEmail() != null && transaction.getEmail().equals(commandInput.getEmail())) {
+                canContinue = true;
+            }
+
+            if(transaction.getReceiverEmail() != null && transaction.getReceiverEmail().equals(commandInput.getEmail())) {
+                canContinue = true;
+            }
+
+            if(transaction.getSenderEmail() != null && transaction.getSenderEmail().equals(commandInput.getEmail())) {
+                canContinue = true;
+            }
+
+
+            if(canContinue) {
+
 
                 ObjectNode transactionNode = objectMapper.createObjectNode();
                 transactionNode.put("timestamp", transaction.getTimestamp());
@@ -82,6 +97,10 @@ public class PrintTransactions {
                     transactionNode.put("amount", transaction.getAmountSpent());
                     transactionNode.put("currency", transaction.getCurrency());
                     transactionNode.put("description", "Split payment of " + formattedAmount + " " + transaction.getCurrency());
+
+                    if(transaction.getErrorAccount() != null) {
+                        transactionNode.put("error", transaction.getErrorAccount());
+                    }
 
                     ArrayNode accountsArray = objectMapper.createArrayNode();
                     for (String account : transaction.getAccounts()) {

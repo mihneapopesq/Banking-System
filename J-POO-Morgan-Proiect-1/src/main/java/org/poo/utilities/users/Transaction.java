@@ -15,17 +15,27 @@ public class Transaction {
     private String cardHolder;
     private String commerciant;
     private double amountSpent;
+    private String senderEmail;
+    private String receiverEmail;
     private String email;
     private List<String> accounts;
     private String reportIban;
-    private String error;
+    private String errorAccount;
 
-    public String getError() {
-        return error;
+    public String getEmail() {
+        return email;
     }
 
-    public void setError(String error) {
-        this.error = error;
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getErrorAccount() {
+        return errorAccount;
+    }
+
+    public void setErrorAccount(String errorAccount) {
+        this.errorAccount = errorAccount;
     }
 
     public String getReportIban() {
@@ -36,12 +46,20 @@ public class Transaction {
         this.reportIban = reportIban;
     }
 
-    public String getEmail() {
-        return email;
+    public String getSenderEmail() {
+        return senderEmail;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setSenderEmail(String senderEmail) {
+        this.senderEmail = senderEmail;
+    }
+
+    public String getReceiverEmail() {
+        return receiverEmail;
+    }
+
+    public void setReceiverEmail(String receiverEmail) {
+        this.receiverEmail = receiverEmail;
     }
 
     public List<String> getAccounts() {

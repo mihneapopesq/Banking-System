@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.fileio.CommandInput;
 import org.poo.utilities.users.Account;
+import org.poo.utilities.users.Transaction;
 import org.poo.utilities.users.User;
 
 import java.util.ArrayList;
@@ -12,10 +13,9 @@ import java.util.ArrayList;
 public class DeleteAccount {
     public void deleteAccount(final ArrayList<User> users, final CommandInput commandInput,
                               final ArrayNode output, final ObjectMapper objectMapper,
-                              final ObjectNode commandNode) {
+                              final ObjectNode commandNode, final ArrayList<Transaction> transactions) {
 
         boolean accountDeleted = false;
-
         for (User user : users) {
             if (user.getUser().getEmail().equals(commandInput.getEmail())) {
                 for (int i = user.getAccounts().size() - 1; i >= 0; i--) {
@@ -36,6 +36,13 @@ public class DeleteAccount {
             outputNode.put("success", "Account deleted");
         } else {
             outputNode.put("error", "Account couldn't be deleted - see org.poo.transactions for details");
+
+            Transaction transaction = new Transaction();
+            transaction.setTimestamp(commandInput.getTimestamp());
+            transaction.setDescription("Account couldn't be deleted - there are funds remaining");
+            transaction.setEmail(commandInput.getEmail());
+            transactions.add(transaction);
+
         }
 
         outputNode.put("timestamp", commandInput.getTimestamp());

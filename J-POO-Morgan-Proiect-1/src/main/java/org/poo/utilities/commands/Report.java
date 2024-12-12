@@ -112,6 +112,11 @@ public class Report {
                     transactionNode.put("currency", transaction.getCurrency());
                     transactionNode.put("description", "Split payment of " + formattedAmount + " " + transaction.getCurrency());
 
+                    if(transaction.getErrorAccount() != null) {
+                        transactionNode.put("error", transaction.getErrorAccount());
+                    }
+
+
                     ArrayNode involvedAccounts = objectMapper.createArrayNode();
                     for (String acc : transaction.getAccounts()) {
                         involvedAccounts.add(acc);
