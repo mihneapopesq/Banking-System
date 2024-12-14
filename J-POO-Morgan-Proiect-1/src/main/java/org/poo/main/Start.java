@@ -110,7 +110,7 @@ public class Start {
                 checkCardStatus.checkCardStatus(users, command, output, commandNode, objectMapper, transactions);
             } else if(command.getCommand().equals("changeInterestRate")) {
                 ChangeInterestRate changeInterestRate = new ChangeInterestRate();
-                changeInterestRate.changeInterestRate(output, users, objectMapper, commandNode, command);
+                changeInterestRate.changeInterestRate(output, users, objectMapper, commandNode, command, transactions);
             } else if(command.getCommand().equals("splitPayment")) {
                 SplitPayment splitPayment = new SplitPayment();
                 splitPayment.splitPayment(users, command, currencyGraph, transactions);

@@ -24,6 +24,15 @@ public class SpendingsReport {
             for (Account account : user.getAccounts()) {
                 if (account.getIban().equals(commandInput.getAccount())) {
                     foundAccount = account;
+
+                    if(foundAccount.getAccountType().equals("savings")) {
+                        ObjectNode outputNode = objectMapper.createObjectNode();
+                        outputNode.put("error", "This kind of report is not supported for a saving account");
+                        commandNode.set("output", outputNode);
+                        output.add(commandNode);
+                        return;
+                    }
+
                     break;
                 }
             }

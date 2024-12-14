@@ -15,8 +15,6 @@ public class Transaction {
     private String cardHolder;
     private String commerciant;
     private double amountSpent;
-    private String senderEmail;
-    private String receiverEmail;
     private String email;
     private List<String> accounts;
     private String reportIban;
@@ -44,22 +42,6 @@ public class Transaction {
 
     public void setReportIban(String reportIban) {
         this.reportIban = reportIban;
-    }
-
-    public String getSenderEmail() {
-        return senderEmail;
-    }
-
-    public void setSenderEmail(String senderEmail) {
-        this.senderEmail = senderEmail;
-    }
-
-    public String getReceiverEmail() {
-        return receiverEmail;
-    }
-
-    public void setReceiverEmail(String receiverEmail) {
-        this.receiverEmail = receiverEmail;
     }
 
     public List<String> getAccounts() {

@@ -8,6 +8,7 @@ import org.poo.utilities.users.Transaction;
 import org.poo.utilities.users.User;
 
 import java.util.ArrayList;
+import java.util.function.DoubleFunction;
 
 public class PrintTransactions {
     public void printTransactions(final ArrayNode output, final ArrayList<User> users,
@@ -22,8 +23,8 @@ public class PrintTransactions {
 
         for(Transaction transaction : transactions) {
 
-            if(transaction.getEmail() == null) {
 
+            if(transaction.getEmail() == null) {
                 return;
             }
 
@@ -32,15 +33,6 @@ public class PrintTransactions {
             if(transaction.getEmail() != null && transaction.getEmail().equals(commandInput.getEmail())) {
                 canContinue = true;
             }
-
-            if(transaction.getReceiverEmail() != null && transaction.getReceiverEmail().equals(commandInput.getEmail())) {
-                canContinue = true;
-            }
-
-            if(transaction.getSenderEmail() != null && transaction.getSenderEmail().equals(commandInput.getEmail())) {
-                canContinue = true;
-            }
-
 
             if(canContinue) {
 

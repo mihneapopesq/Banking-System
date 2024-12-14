@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.fileio.CommandInput;
 import org.poo.utilities.users.Account;
+import org.poo.utilities.users.Transaction;
 import org.poo.utilities.users.User;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ public class ChangeInterestRate {
     public void changeInterestRate(final ArrayNode output, final ArrayList<User> users,
                                    final ObjectMapper objectMapper,
                                    final ObjectNode commandNode,
-                                   final CommandInput commandInput) {
+                                   final CommandInput commandInput, final ArrayList<Transaction> transactions) {
         for(User user : users) {
             for(Account account : user.getAccounts()) {
                 if(account.getIban().equals(commandInput.getAccount())) {
@@ -30,6 +31,12 @@ public class ChangeInterestRate {
                     }
 
                     account.setInterestRate(commandInput.getInterestRate());
+
+                    Transaction transaction = new Transaction();
+                    transaction.setTimestamp(commandInput.getTimestamp());
+                    transaction.setDescription("Interest rate of the account changed to " + commandInput.getInterestRate());
+                    transaction.setEmail(user.getUser().getEmail());
+                    transactions.add(transaction);
                 }
             }
         }

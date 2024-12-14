@@ -28,9 +28,6 @@ public class AddInterest {
                         output.add(commandNode);
                         return;
                     }
-
-//                    account.setInterestRate(commandInput.getInterestRate());
-
                     account.setBalance(account.getBalance() + account.getBalance() * account.getInterestRate());
 
                 }

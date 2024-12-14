@@ -68,9 +68,28 @@ public class PayOnline {
                             transactions.add(transaction);
 
                             if(card.getIsOneTimeCard() == 1) {
-                                card.setCardNumber(Utils.generateCardNumber());
-                            }
 
+                                DeleteCard deleteCard = new DeleteCard();
+                                deleteCard.deleteCard(users, commandInput, transactions);
+
+                                Card newCard = new Card();
+                                newCard.setCardNumber(Utils.generateCardNumber());
+
+                                newCard.setStatus("active");
+                                newCard.setIsOneTimeCard(1);
+
+                                Transaction transaction1 = new Transaction();
+                                transaction1.setDescription("New card created");
+                                transaction1.setTimestamp(commandInput.getTimestamp());
+                                transaction1.setIban(account.getIban());
+                                transaction1.setCardNumber(newCard.getCardNumber());
+                                transaction1.setCardHolder(user.getUser().getEmail());
+                                transaction1.setEmail(user.getUser().getEmail());
+                                transaction1.setReportIban(account.getIban());
+                                transactions.add(transaction1);
+
+                                account.getCards().add(account.getCards().size(), newCard);
+                            }
                             return;
                         }
                     }

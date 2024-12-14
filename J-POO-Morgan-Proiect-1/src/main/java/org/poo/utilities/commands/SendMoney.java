@@ -75,6 +75,7 @@ public class SendMoney {
 
         double rightAmount = currencyGraph.convertCurrency(senderAccount.getCurrency(), receiverAccount.getCurrency(), amount);
 
+
         senderAccount.setBalance(senderAccount.getBalance() - amount);
         receiverAccount.setBalance(receiverAccount.getBalance() + rightAmount);
 

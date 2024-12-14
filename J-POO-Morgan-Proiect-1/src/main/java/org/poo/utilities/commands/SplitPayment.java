@@ -14,12 +14,15 @@ public class SplitPayment {
         double amountPerAccount = commandInput.getAmount() / numberOfAccounts;
 
         boolean canSplit = true;
-        Account invalidAccount = new Account();
+        Account invalidAccount = null;
+
+
         for(String iban : accounts) {
             for(User user : users) {
                 for(Account account : user.getAccounts()) {
                     if(account.getIban().equals(iban)) {
-                        double rightAmount = graph.convertCurrency(account.getCurrency(), commandInput.getCurrency(), amountPerAccount);
+                        double rightAmount = graph.convertCurrency(commandInput.getCurrency(), account.getCurrency(), amountPerAccount);
+
                         if(account.getMinBalance() > account.getBalance() - rightAmount) {
                             invalidAccount = account;
                             canSplit = false;
@@ -30,13 +33,15 @@ public class SplitPayment {
         }
 
 
-        if(canSplit == true) {
+
+        if(canSplit) {
             for (String iban : accounts) {
                 for (User user : users) {
                     for (Account account : user.getAccounts()) {
                         if (account.getIban().equals(iban)) {
 
                             Transaction userTransaction = new Transaction();
+
                             userTransaction.setDescription("Split payment of");
                             userTransaction.setAmountSpent(amountPerAccount);
                             userTransaction.setCurrency(commandInput.getCurrency());
@@ -45,9 +50,10 @@ public class SplitPayment {
                             userTransaction.setTimestamp(commandInput.getTimestamp());
                             userTransaction.setEmail(user.getUser().getEmail());
                             userTransaction.setReportIban(account.getIban());
+
                             transactions.add(userTransaction);
 
-                            double rightAmount = graph.convertCurrency(account.getCurrency(), commandInput.getCurrency(), amountPerAccount);
+                            double rightAmount = graph.convertCurrency(commandInput.getCurrency(), account.getCurrency(), amountPerAccount);
 
                             account.setBalance(account.getBalance() - rightAmount);
                         }
