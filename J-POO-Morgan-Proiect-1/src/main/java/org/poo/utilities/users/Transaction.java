@@ -1,7 +1,12 @@
 package org.poo.utilities.users;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
+@Getter
+@Setter
 public class Transaction {
     private String description;
     private int timestamp;
@@ -20,131 +25,110 @@ public class Transaction {
     private String reportIban;
     private String errorAccount;
 
-    public String getEmail() {
-        return email;
+    public Transaction(String description, int timestamp, String iban,
+                       String cardNumber, String cardHolder, String email, String reportIban) {
+        this.description = description;
+        this.timestamp = timestamp;
+        this.iban = iban;
+        this.cardNumber = cardNumber;
+        this.cardHolder = cardHolder;
+        this.email = email;
+        this.reportIban = reportIban;
+        this.amount = 0;
+        this.currency = null;
     }
 
-    public void setEmail(String email) {
+    public Transaction(String description, int timestamp, double amount, String iban,
+                       double amountSpent, String email) {
+        this.description = description;
+        this.timestamp = timestamp;
+        this.amount = amount;
+        this.iban = iban;
+        this.amountSpent = amountSpent;
         this.email = email;
     }
 
-    public String getErrorAccount() {
-        return errorAccount;
-    }
-
-    public void setErrorAccount(String errorAccount) {
-        this.errorAccount = errorAccount;
-    }
-
-    public String getReportIban() {
-        return reportIban;
-    }
-
-    public void setReportIban(String reportIban) {
+    public Transaction(String description, double amountSpent, String currency, double amount, List<String> accounts,
+                       int timestamp, String email, String reportIban) {
+        this.description = description;
+        this.amountSpent = amountSpent;
+        this.currency = currency;
+        this.amount = amount;
+        this.accounts = accounts;
+        this.timestamp = timestamp;
+        this.email = email;
         this.reportIban = reportIban;
     }
 
-    public List<String> getAccounts() {
-        return accounts;
-    }
 
-    public void setAccounts(List<String> accounts) {
-        this.accounts = accounts;
-    }
-
-    public double getAmountSpent() {
-        return amountSpent;
-    }
-
-    public void setAmountSpent(double amountSpent) {
-        this.amountSpent = amountSpent;
-    }
-
-    public String getCommerciant() {
-        return commerciant;
-    }
-
-    public void setCommerciant(String commerciant) {
-        this.commerciant = commerciant;
-    }
-
-    public String getCardHolder() {
-        return cardHolder;
-    }
-
-    public void setCardHolder(String cardHolder) {
-        this.cardHolder = cardHolder;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String transaction) {
-        this.description = transaction;
-    }
-
-    public int getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(int timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(double amount) {
+    public Transaction(double amount, String currency, String transferType, int timestamp, String description,
+                       String senderIBAN, String receiverIBAN, String email, String reportIban) {
         this.amount = amount;
-    }
-
-    public String getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(String currency) {
         this.currency = currency;
-    }
-
-    public String getReceiverIBAN() {
-        return receiverIBAN;
-    }
-
-    public void setReceiverIBAN(String receiverIBAN) {
-        this.receiverIBAN = receiverIBAN;
-    }
-
-    public String getSenderIBAN() {
-        return senderIBAN;
-    }
-
-    public void setSenderIBAN(String senderIBAN) {
-        this.senderIBAN = senderIBAN;
-    }
-
-    public String getTransferType() {
-        return transferType;
-    }
-
-    public void setTransferType(String transferType) {
         this.transferType = transferType;
+        this.timestamp = timestamp;
+        this.description = description;
+        this.senderIBAN = senderIBAN;
+        this.receiverIBAN = receiverIBAN;
+        this.email = email;
+        this.reportIban = reportIban;
     }
 
-    public String getIban() {
-        return iban;
-    }
-
-    public void setIban(String iban) {
+    public Transaction(String description, int timestamp, double amount, String currency,
+                       String receiverIBAN, String senderIBAN, String transferType, String iban,
+                       String cardNumber, String cardHolder, String commerciant, double amountSpent,
+                       String email, List<String> accounts, String reportIban, String errorAccount) {
+        this.description = description;
+        this.timestamp = timestamp;
+        this.amount = amount;
+        this.currency = currency;
+        this.receiverIBAN = receiverIBAN;
+        this.senderIBAN = senderIBAN;
+        this.transferType = transferType;
         this.iban = iban;
-    }
-
-    public String getCardNumber() {
-        return cardNumber;
-    }
-
-    public void setCardNumber(String cardNumber) {
         this.cardNumber = cardNumber;
+        this.cardHolder = cardHolder;
+        this.commerciant = commerciant;
+        this.amountSpent = amountSpent;
+        this.email = email;
+        this.accounts = accounts;
+        this.reportIban = reportIban;
+        this.errorAccount = errorAccount;
+    }
+
+
+    public Transaction(String description, int timestamp, String email, String reportIban) {
+        this.description = description;
+        this.timestamp = timestamp;
+        this.email = email;
+        this.reportIban = reportIban;
+    }
+
+    public Transaction(String description, int timestamp, String email) {
+        this.description = description;
+        this.timestamp = timestamp;
+        this.email = email;
+    }
+
+    public Transaction(String description, int timestamp, double amountSpent, String commerciant, String email, String reportIban) {
+        this.description = description;
+        this.timestamp = timestamp;
+        this.amountSpent = amountSpent;
+        this.commerciant = commerciant;
+        this.email = email;
+        this.reportIban = reportIban;
+    }
+
+    public Transaction(String description, double amountSpent, String currency, double amount, List<String> accounts,
+                       int timestamp, String email, String reportIban, String errorAccount) {
+        this.description = description;
+        this.amountSpent = amountSpent;
+        this.currency = currency;
+        this.amount = amount;
+        this.accounts = accounts;
+        this.timestamp = timestamp;
+        this.email = email;
+        this.reportIban = reportIban;
+        this.errorAccount = errorAccount;
     }
 }

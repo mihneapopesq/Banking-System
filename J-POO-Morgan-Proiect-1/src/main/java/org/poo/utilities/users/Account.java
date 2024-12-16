@@ -1,8 +1,12 @@
 package org.poo.utilities.users;
 
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 
+@Getter
+@Setter
 public class Account {
     private ArrayList<Card> cards;
     private String iban;
@@ -13,67 +17,13 @@ public class Account {
     private String alias;
     private double interestRate;
 
-    public double getInterestRate() {
-        return interestRate;
-    }
-
-    public void setInterestRate(double interestRate) {
-        this.interestRate = interestRate;
-    }
-
-    public ArrayList<Card> getCards() {
-        return cards;
-    }
-
-    public void setCards(ArrayList<Card> cards) {
-        this.cards = cards;
-    }
-
-    public String getIban() {
-        return iban;
-    }
-
-    public void setIban(String iban) {
+    public Account(String iban, String currency, String accountType, double interestRate, double balance, double minBalance) {
         this.iban = iban;
-    }
-
-    public double getBalance() {
-        return balance;
-    }
-
-    public void setBalance(double balance) {
-        this.balance = balance;
-    }
-
-    public String getCurrency() {
-        return currency;
-    }
-
-    public void setCurrency(String currency) {
         this.currency = currency;
-    }
-
-    public String getAccountType() {
-        return accountType;
-    }
-
-    public void setAccountType(String accountType) {
         this.accountType = accountType;
-    }
-
-    public double getMinBalance() {
-        return minBalance;
-    }
-
-    public void setMinBalance(double minBalance) {
+        this.interestRate = interestRate;
+        this.balance = balance;
         this.minBalance = minBalance;
-    }
-
-    public String getAlias() {
-        return alias;
-    }
-
-    public void setAlias(String alias) {
-        this.alias = alias;
+        this.cards = new ArrayList<>();
     }
 }

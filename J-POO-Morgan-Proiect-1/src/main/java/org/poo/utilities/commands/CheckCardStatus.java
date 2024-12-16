@@ -23,12 +23,16 @@ public class CheckCardStatus {
 
 
                         if(account.getBalance() - account.getMinBalance() <= 30) {
-                            Transaction transaction = new Transaction();
-                            transaction.setTimestamp(commandInput.getTimestamp());
-                            transaction.setDescription("You have reached the minimum amount of funds, the card will be frozen");
-                            transaction.setEmail(user.getUser().getEmail());
+
+                            Transaction transaction = new Transaction(
+                                    "You have reached the minimum amount of funds, the card will be frozen",
+                                    commandInput.getTimestamp(),
+                                    user.getUser().getEmail(),
+                                    account.getIban()
+                            );
+
                             transactions.add(transaction);
-                            transaction.setReportIban(account.getIban());
+
 
                             card.setIsFrozen(1);
                             card.setStatus("frozen");

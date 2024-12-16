@@ -32,10 +32,12 @@ public class ChangeInterestRate {
 
                     account.setInterestRate(commandInput.getInterestRate());
 
-                    Transaction transaction = new Transaction();
-                    transaction.setTimestamp(commandInput.getTimestamp());
-                    transaction.setDescription("Interest rate of the account changed to " + commandInput.getInterestRate());
-                    transaction.setEmail(user.getUser().getEmail());
+                    Transaction transaction = new Transaction(
+                            "Interest rate of the account changed to " + commandInput.getInterestRate(),
+                            commandInput.getTimestamp(),
+                            user.getUser().getEmail()
+                    );
+
                     transactions.add(transaction);
                 }
             }

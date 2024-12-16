@@ -19,14 +19,16 @@ public class DeleteCard {
                         if (card.getCardNumber().equals(commandInput.getCardNumber())) {
                             account.getCards().remove(i);
 
-                            Transaction transaction = new Transaction();
-                            transaction.setDescription("The card has been destroyed");
-                            transaction.setTimestamp(commandInput.getTimestamp());
-                            transaction.setIban(account.getIban());
-                            transaction.setCardNumber(card.getCardNumber());
-                            transaction.setCardHolder(user.getUser().getEmail());
-                            transaction.setEmail(user.getUser().getEmail());
-                            transaction.setReportIban(account.getIban());
+                            Transaction transaction = new Transaction(
+                                    "The card has been destroyed",
+                                    commandInput.getTimestamp(),
+                                    account.getIban(),
+                                    card.getCardNumber(),
+                                    user.getUser().getEmail(),
+                                    user.getUser().getEmail(),
+                                    account.getIban()
+                            );
+
                             transactions.add(transaction);
 
                             return;

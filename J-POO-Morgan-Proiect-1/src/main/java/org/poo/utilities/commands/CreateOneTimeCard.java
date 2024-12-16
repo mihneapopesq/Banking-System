@@ -25,14 +25,18 @@ public class CreateOneTimeCard {
                         newCard.setStatus("active");
                         newCard.setIsOneTimeCard(1);
 
-                        Transaction transaction = new Transaction();
-                        transaction.setDescription("New card created");
-                        transaction.setTimestamp(commandInput.getTimestamp());
-                        transaction.setIban(account.getIban());
-                        transaction.setCardNumber(newCard.getCardNumber());
-                        transaction.setCardHolder(user.getUser().getEmail());
-                        transaction.setEmail(user.getUser().getEmail());
-                        transaction.setReportIban(account.getIban());
+
+                        Transaction transaction = new Transaction(
+                                "New card created",
+                                commandInput.getTimestamp(),
+                                account.getIban(),
+                                newCard.getCardNumber(),
+                                user.getUser().getEmail(),
+                                user.getUser().getEmail(),
+                                account.getIban()
+                        );
+
+
                         transactions.add(transaction);
 
                         account.getCards().add(account.getCards().size() ,newCard);

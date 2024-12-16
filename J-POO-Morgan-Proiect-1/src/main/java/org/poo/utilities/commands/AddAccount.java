@@ -9,45 +9,31 @@ import org.poo.utils.Utils;
 import java.util.ArrayList;
 
 public class AddAccount {
-    public void addAccount(ArrayList<User> users, CommandInput commandInput,
-                           ArrayList<Transaction> transactions) {
+    public void addAccount(ArrayList<User> users, CommandInput commandInput, ArrayList<Transaction> transactions) {
         for (User user : users) {
-           if(user.getUser().getEmail().equals(commandInput.getEmail())) {
+            if (user.getUser().getEmail().equals(commandInput.getEmail())) {
+                String generatedIBAN = Utils.generateIBAN();
 
+                Account newAccount = new Account(
+                        generatedIBAN,
+                        commandInput.getCurrency(),
+                        commandInput.getAccountType(),
+                        commandInput.getInterestRate(),
+                        0,
+                        0
+                );
 
-               String generatedIBAN = Utils.generateIBAN();
+                Transaction transaction = new Transaction(
+                        "New account created",
+                        commandInput.getTimestamp(),
+                        user.getUser().getEmail(),
+                        generatedIBAN
+                );
+                transactions.add(transaction);
 
-               // fa un constructor fast
-               Account newAccount = new Account();
-               newAccount.setAccountType(commandInput.getAccountType());
-               newAccount.setCurrency(commandInput.getCurrency());
-               newAccount.setIban(generatedIBAN);
-
-               newAccount.setInterestRate(commandInput.getInterestRate());
-
-
-               newAccount.setBalance(0);
-               newAccount.setMinBalance(0);
-
-               Transaction transaction = new Transaction();
-               transaction.setDescription("New account created");
-               transaction.setTimestamp(commandInput.getTimestamp());
-               transaction.setEmail(user.getUser().getEmail());
-               transaction.setReportIban(generatedIBAN);
-
-
-               transactions.add(transaction);
-
-               newAccount.setCards(new ArrayList<>());
-
-               ArrayList<Account> accounts = user.getAccounts();
-
-               accounts.add(newAccount);
-
-               user.setAccounts(accounts);
-
-               break;
-           }
+                user.getAccounts().add(newAccount);
+                break;
+            }
         }
     }
 }

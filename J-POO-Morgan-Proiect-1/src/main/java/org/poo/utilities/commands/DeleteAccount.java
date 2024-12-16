@@ -37,10 +37,12 @@ public class DeleteAccount {
         } else {
             outputNode.put("error", "Account couldn't be deleted - see org.poo.transactions for details");
 
-            Transaction transaction = new Transaction();
-            transaction.setTimestamp(commandInput.getTimestamp());
-            transaction.setDescription("Account couldn't be deleted - there are funds remaining");
-            transaction.setEmail(commandInput.getEmail());
+            Transaction transaction = new Transaction(
+                    "Account couldn't be deleted - there are funds remaining",
+                    commandInput.getTimestamp(),
+                    commandInput.getEmail()
+            );
+
             transactions.add(transaction);
 
         }

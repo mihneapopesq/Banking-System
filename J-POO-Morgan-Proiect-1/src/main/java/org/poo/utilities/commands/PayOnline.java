@@ -27,12 +27,17 @@ public class PayOnline {
 
 
                             if(card.getIsFrozen() == 1) {
-                                Transaction transaction = new Transaction();
-                                transaction.setTimestamp(commandInput.getTimestamp());
-                                transaction.setDescription("The card is frozen");
-                                transaction.setEmail(user.getUser().getEmail());
-                                transaction.setReportIban(account.getIban());
+
+                                Transaction transaction = new Transaction(
+                                        "The card is frozen",
+                                        commandInput.getTimestamp(),
+                                        user.getUser().getEmail(),
+                                        account.getIban()
+                                );
+
                                 transactions.add(transaction);
+
+
 
                                 return ;
                             }
@@ -44,12 +49,18 @@ public class PayOnline {
 
                             if(account.getMinBalance() > account.getBalance() - amountInAccountCurrency) {
 
-                                Transaction transaction = new Transaction();
-                                transaction.setTimestamp(commandInput.getTimestamp());
-                                transaction.setDescription("Insufficient funds");
-                                transaction.setEmail(user.getUser().getEmail());
-                                transaction.setReportIban(account.getIban());
+
+                                Transaction transaction = new Transaction(
+                                        "Insufficient funds",
+                                        commandInput.getTimestamp(),
+                                        user.getUser().getEmail(),
+                                        account.getIban()
+                                );
+
                                 transactions.add(transaction);
+
+
+
 
                                 return ;
                             }
@@ -57,13 +68,14 @@ public class PayOnline {
 
                             account.setBalance(account.getBalance() - amountInAccountCurrency);
 
-                            Transaction transaction = new Transaction();
-                            transaction.setAmountSpent(amountInAccountCurrency);
-                            transaction.setTimestamp(commandInput.getTimestamp());
-                            transaction.setDescription("Card payment");
-                            transaction.setCommerciant(commandInput.getCommerciant());
-                            transaction.setEmail(user.getUser().getEmail());
-                            transaction.setReportIban(account.getIban());
+                            Transaction transaction = new Transaction(
+                                    "Card payment",
+                                    commandInput.getTimestamp(),
+                                    amountInAccountCurrency,
+                                    commandInput.getCommerciant(),
+                                    user.getUser().getEmail(),
+                                    account.getIban()
+                            );
 
                             transactions.add(transaction);
 
@@ -78,15 +90,18 @@ public class PayOnline {
                                 newCard.setStatus("active");
                                 newCard.setIsOneTimeCard(1);
 
-                                Transaction transaction1 = new Transaction();
-                                transaction1.setDescription("New card created");
-                                transaction1.setTimestamp(commandInput.getTimestamp());
-                                transaction1.setIban(account.getIban());
-                                transaction1.setCardNumber(newCard.getCardNumber());
-                                transaction1.setCardHolder(user.getUser().getEmail());
-                                transaction1.setEmail(user.getUser().getEmail());
-                                transaction1.setReportIban(account.getIban());
+                                Transaction transaction1 = new Transaction(
+                                        "New card created",
+                                        commandInput.getTimestamp(),
+                                        account.getIban(),
+                                        newCard.getCardNumber(),
+                                        user.getUser().getEmail(),
+                                        user.getUser().getEmail(),
+                                        account.getIban()
+                                );
+
                                 transactions.add(transaction1);
+
 
                                 account.getCards().add(account.getCards().size(), newCard);
                             }

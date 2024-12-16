@@ -15,7 +15,6 @@ public class CreateCard {
         for (User user : users) {
             if(user.getUser().getEmail().equals(commandInput.getEmail())) {
 
-                // caut contul cu iban
                 for (Account account : user.getAccounts()) {
                     if (account.getIban().equals(commandInput.getAccount())) {
 
@@ -25,14 +24,16 @@ public class CreateCard {
                         newCard.setStatus("active");
                         newCard.setIsOneTimeCard(0);
                         newCard.setIsFrozen(0);
-                        Transaction transaction = new Transaction();
-                        transaction.setDescription("New card created");
-                        transaction.setTimestamp(commandInput.getTimestamp());
-                        transaction.setIban(account.getIban());
-                        transaction.setCardNumber(newCard.getCardNumber());
-                        transaction.setCardHolder(user.getUser().getEmail());
-                        transaction.setEmail(user.getUser().getEmail());
-                        transaction.setReportIban(account.getIban());
+                        Transaction transaction = new Transaction(
+                                "New card created",
+                                commandInput.getTimestamp(),
+                                account.getIban(),
+                                newCard.getCardNumber(),
+                                user.getUser().getEmail(),
+                                user.getUser().getEmail(),
+                                account.getIban()
+                        );
+
                         transactions.add(transaction);
                         account.getCards().add(account.getCards().size() ,newCard);
                         break;

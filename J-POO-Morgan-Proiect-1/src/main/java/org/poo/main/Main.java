@@ -73,7 +73,7 @@ public final class Main {
         ObjectInput inputData = objectMapper.readValue(file, ObjectInput.class);
 
         ArrayNode output = objectMapper.createArrayNode();
-        Start start = new Start(inputData, output);
+        Start start = new Start(inputData);
         start.run(output);
         /*
          * TODO Implement your function here

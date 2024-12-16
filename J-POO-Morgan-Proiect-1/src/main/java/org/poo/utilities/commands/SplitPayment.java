@@ -32,26 +32,24 @@ public class SplitPayment {
             }
         }
 
-
-
         if(canSplit) {
             for (String iban : accounts) {
                 for (User user : users) {
                     for (Account account : user.getAccounts()) {
                         if (account.getIban().equals(iban)) {
-
-                            Transaction userTransaction = new Transaction();
-
-                            userTransaction.setDescription("Split payment of");
-                            userTransaction.setAmountSpent(amountPerAccount);
-                            userTransaction.setCurrency(commandInput.getCurrency());
-                            userTransaction.setAmount(commandInput.getAmount());
-                            userTransaction.setAccounts(accounts);
-                            userTransaction.setTimestamp(commandInput.getTimestamp());
-                            userTransaction.setEmail(user.getUser().getEmail());
-                            userTransaction.setReportIban(account.getIban());
+                            Transaction userTransaction = new Transaction(
+                                    "Split payment of",
+                                    amountPerAccount,
+                                    commandInput.getCurrency(),
+                                    commandInput.getAmount(),
+                                    accounts,
+                                    commandInput.getTimestamp(),
+                                    user.getUser().getEmail(),
+                                    account.getIban()
+                            );
 
                             transactions.add(userTransaction);
+
 
                             double rightAmount = graph.convertCurrency(commandInput.getCurrency(), account.getCurrency(), amountPerAccount);
 
@@ -66,17 +64,17 @@ public class SplitPayment {
                     for (Account account : user.getAccounts()) {
                         if (account.getIban().equals(iban)) {
 
-                            Transaction userTransaction = new Transaction();
-                            userTransaction.setDescription("Split payment of");
-                            userTransaction.setAmountSpent(amountPerAccount);
-                            userTransaction.setCurrency(commandInput.getCurrency());
-                            userTransaction.setAmount(commandInput.getAmount());
-                            userTransaction.setAccounts(accounts);
-                            userTransaction.setTimestamp(commandInput.getTimestamp());
-                            userTransaction.setEmail(user.getUser().getEmail());
-                            userTransaction.setReportIban(account.getIban());
-
-                            userTransaction.setErrorAccount("Account " + invalidAccount.getIban() + " has insufficient funds for a split payment.");
+                            Transaction userTransaction = new Transaction(
+                                    "Split payment of",
+                                    amountPerAccount,
+                                    commandInput.getCurrency(),
+                                    commandInput.getAmount(),
+                                    accounts,
+                                    commandInput.getTimestamp(),
+                                    user.getUser().getEmail(),
+                                    account.getIban(),
+                                    "Account " + invalidAccount.getIban() + " has insufficient funds for a split payment."
+                            );
 
                             transactions.add(userTransaction);
 

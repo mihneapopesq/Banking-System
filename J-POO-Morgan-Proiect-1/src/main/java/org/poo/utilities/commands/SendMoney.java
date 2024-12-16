@@ -48,27 +48,30 @@ public class SendMoney {
 
         if(senderAccount.getBalance() < amount) {
 
-            Transaction transaction = new Transaction();
-            transaction.setDescription("Insufficient funds");
-            transaction.setTimestamp(commandInput.getTimestamp());
-
-            transaction.setEmail(senderUser.getUser().getEmail());
-            transaction.setReportIban(senderAccount.getIban());
-
+            Transaction transaction = new Transaction(
+                    "Insufficient funds",
+                    commandInput.getTimestamp(),
+                    senderUser.getUser().getEmail(),
+                    senderAccount.getIban()
+            );
 
             transactions.add(transaction);
+
 
             return;
         }
 
         if(senderAccount.getMinBalance() > senderAccount.getBalance() - amount) {
 
-            Transaction transaction = new Transaction();
-            transaction.setDescription("Insufficient funds");
-            transaction.setTimestamp(commandInput.getTimestamp());
-            transaction.setEmail(senderUser.getUser().getEmail());
-            transaction.setReportIban(senderAccount.getIban());
+            Transaction transaction = new Transaction(
+                    "Insufficient funds",
+                    commandInput.getTimestamp(),
+                    senderUser.getUser().getEmail(),
+                    senderAccount.getIban()
+            );
+
             transactions.add(transaction);
+
 
             return;
         }
@@ -79,29 +82,34 @@ public class SendMoney {
         senderAccount.setBalance(senderAccount.getBalance() - amount);
         receiverAccount.setBalance(receiverAccount.getBalance() + rightAmount);
 
-        Transaction senderTransaction = new Transaction();
-        senderTransaction.setAmount(amount);
-        senderTransaction.setCurrency(senderAccount.getCurrency());
-        senderTransaction.setTransferType("sent");
-        senderTransaction.setTimestamp(commandInput.getTimestamp());
-        senderTransaction.setDescription(commandInput.getDescription());
-        senderTransaction.setSenderIBAN(commandInput.getAccount());
-        senderTransaction.setReceiverIBAN(commandInput.getReceiver());
-        senderTransaction.setEmail(senderUser.getUser().getEmail());
-        senderTransaction.setReportIban(senderAccount.getIban());
+        Transaction senderTransaction = new Transaction(
+                amount,
+                senderAccount.getCurrency(),
+                "sent",
+                commandInput.getTimestamp(),
+                commandInput.getDescription(),
+                commandInput.getAccount(),
+                commandInput.getReceiver(),
+                senderUser.getUser().getEmail(),
+                senderAccount.getIban()
+        );
+
         transactions.add(senderTransaction);
 
-        Transaction receiverTransaction = new Transaction();
-        receiverTransaction.setAmount(rightAmount);
-        receiverTransaction.setCurrency(receiverAccount.getCurrency());
-        receiverTransaction.setTransferType("received");
-        receiverTransaction.setTimestamp(commandInput.getTimestamp());
-        receiverTransaction.setDescription(commandInput.getDescription());
-        receiverTransaction.setSenderIBAN(commandInput.getAccount());
-        receiverTransaction.setReceiverIBAN(commandInput.getReceiver());
-        receiverTransaction.setEmail(receiverUser.getUser().getEmail());
-        receiverTransaction.setReportIban(receiverAccount.getIban());
+        Transaction receiverTransaction = new Transaction(
+                rightAmount,
+                receiverAccount.getCurrency(),
+                "received",
+                commandInput.getTimestamp(),
+                commandInput.getDescription(),
+                commandInput.getAccount(),
+                commandInput.getReceiver(),
+                receiverUser.getUser().getEmail(),
+                receiverAccount.getIban()
+        );
+
         transactions.add(receiverTransaction);
+
 
     }
 }
