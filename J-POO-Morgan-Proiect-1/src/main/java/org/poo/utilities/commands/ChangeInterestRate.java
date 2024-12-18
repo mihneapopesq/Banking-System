@@ -10,16 +10,30 @@ import org.poo.utilities.users.User;
 
 import java.util.ArrayList;
 
-public class ChangeInterestRate {
-    public void changeInterestRate(final ArrayNode output, final ArrayList<User> users,
-                                   final ObjectMapper objectMapper,
-                                   final ObjectNode commandNode,
-                                   final CommandInput commandInput, final ArrayList<Transaction> transactions) {
-        for(User user : users) {
-            for(Account account : user.getAccounts()) {
-                if(account.getIban().equals(commandInput.getAccount())) {
+public class ChangeInterestRate extends CommandBase {
+    private final ArrayNode output;
+    private final ArrayList<User> users;
+    private final ObjectMapper objectMapper;
+    private final ObjectNode commandNode;
+    private final CommandInput commandInput;
+    private final ArrayList<Transaction> transactions;
 
-                    if(account.getAccountType().equals("classic")) {
+    public ChangeInterestRate(Builder builder) {
+        this.output = builder.getOutput();
+        this.users = builder.getUsers();
+        this.objectMapper = builder.getObjectMapper();
+        this.commandNode = builder.getCommandNode();
+        this.commandInput = builder.getCommandInput();
+        this.transactions = builder.getTransactions();
+    }
+
+    @Override
+    public void execute() {
+        for (User user : users) {
+            for (Account account : user.getAccounts()) {
+                if (account.getIban().equals(commandInput.getAccount())) {
+
+                    if (!account.getAccountType().equals("savings")) {
                         ObjectNode outputNode = objectMapper.createObjectNode();
                         commandNode.put("command", commandInput.getCommand());
                         outputNode.put("description", "This is not a savings account");
@@ -37,11 +51,9 @@ public class ChangeInterestRate {
                             commandInput.getTimestamp(),
                             user.getUser().getEmail()
                     );
-
                     transactions.add(transaction);
                 }
             }
         }
-
     }
 }

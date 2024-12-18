@@ -10,11 +10,24 @@ import org.poo.utilities.users.Card;
 
 import java.util.ArrayList;
 
-public class PrintUsers {
-    public void printUsers(final ArrayNode output, final ArrayList<User> users,
-                           final ObjectMapper objectMapper,
-                           final ObjectNode commandNode,
-                           final CommandInput command) {
+public class PrintUsers extends CommandBase {
+
+    private final ArrayNode output;
+    private final ArrayList<User> users;
+    private final ObjectMapper objectMapper;
+    private final ObjectNode commandNode;
+    private final CommandInput command;
+
+    public PrintUsers(Builder builder) {
+        this.output = builder.getOutput();
+        this.users = builder.getUsers();
+        this.objectMapper = builder.getObjectMapper();
+        this.commandNode = builder.getCommandNode();
+        this.command = builder.getCommandInput();
+    }
+
+    @Override
+    public void execute() {
         commandNode.put("command", command.getCommand());
 
         ArrayNode usersOutput = objectMapper.createArrayNode();
@@ -29,20 +42,14 @@ public class PrintUsers {
 
             for (Account account : user.getAccounts()) {
                 ObjectNode accountNode = objectMapper.createObjectNode();
-
-
-
                 accountNode.put("IBAN", account.getIban());
                 accountNode.put("balance", account.getBalance());
                 accountNode.put("currency", account.getCurrency());
                 accountNode.put("type", account.getAccountType());
 
-
-
                 ArrayNode cardsNode = objectMapper.createArrayNode();
 
                 if (account.getCards() != null) {
-
                     for (Card card : account.getCards()) {
                         ObjectNode cardNode = objectMapper.createObjectNode();
                         cardNode.put("cardNumber", card.getCardNumber());
@@ -62,4 +69,5 @@ public class PrintUsers {
         commandNode.put("timestamp", command.getTimestamp());
         output.add(commandNode);
     }
+
 }

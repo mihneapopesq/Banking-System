@@ -6,9 +6,21 @@ import org.poo.utilities.users.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SplitPayment {
-    public void splitPayment(ArrayList<User> users, CommandInput commandInput, CurrencyGraph graph,
-                             ArrayList<Transaction> transactions) {
+public class SplitPayment extends CommandBase {
+    private final ArrayList<User> users;
+    private final CommandInput commandInput;
+    private final CurrencyGraph graph;
+    private final ArrayList<Transaction> transactions;
+
+    public SplitPayment(Builder builder) {
+        this.users = builder.getUsers();
+        this.commandInput = builder.getCommandInput();
+        this.graph = builder.getCurrencyGraph();
+        this.transactions = builder.getTransactions();
+    }
+
+    @Override
+    public void execute() {
         List<String> accounts = commandInput.getAccounts();
         int numberOfAccounts = accounts.size();
         double amountPerAccount = commandInput.getAmount() / numberOfAccounts;
@@ -16,14 +28,13 @@ public class SplitPayment {
         boolean canSplit = true;
         Account invalidAccount = null;
 
-
-        for(String iban : accounts) {
-            for(User user : users) {
-                for(Account account : user.getAccounts()) {
-                    if(account.getIban().equals(iban)) {
+        for (String iban : accounts) {
+            for (User user : users) {
+                for (Account account : user.getAccounts()) {
+                    if (account.getIban().equals(iban)) {
                         double rightAmount = graph.convertCurrency(commandInput.getCurrency(), account.getCurrency(), amountPerAccount);
 
-                        if(account.getMinBalance() > account.getBalance() - rightAmount) {
+                        if (account.getMinBalance() > account.getBalance() - rightAmount) {
                             invalidAccount = account;
                             canSplit = false;
                         }
@@ -32,7 +43,7 @@ public class SplitPayment {
             }
         }
 
-        if(canSplit) {
+        if (canSplit) {
             for (String iban : accounts) {
                 for (User user : users) {
                     for (Account account : user.getAccounts()) {
@@ -50,7 +61,6 @@ public class SplitPayment {
 
                             transactions.add(userTransaction);
 
-
                             double rightAmount = graph.convertCurrency(commandInput.getCurrency(), account.getCurrency(), amountPerAccount);
 
                             account.setBalance(account.getBalance() - rightAmount);
@@ -63,7 +73,6 @@ public class SplitPayment {
                 for (User user : users) {
                     for (Account account : user.getAccounts()) {
                         if (account.getIban().equals(iban)) {
-
                             Transaction userTransaction = new Transaction(
                                     "Split payment of",
                                     amountPerAccount,
@@ -77,12 +86,10 @@ public class SplitPayment {
                             );
 
                             transactions.add(userTransaction);
-
                         }
                     }
                 }
             }
         }
-
     }
 }

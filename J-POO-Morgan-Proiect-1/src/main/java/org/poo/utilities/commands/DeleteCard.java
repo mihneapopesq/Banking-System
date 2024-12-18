@@ -8,9 +8,20 @@ import org.poo.utilities.users.User;
 
 import java.util.ArrayList;
 
-public class DeleteCard {
-    public void deleteCard(final ArrayList<User> users, final CommandInput commandInput,
-                           final ArrayList<Transaction> transactions) {
+public class DeleteCard extends CommandBase {
+
+    private final ArrayList<User> users;
+    private final CommandInput commandInput;
+    private final ArrayList<Transaction> transactions;
+
+    public DeleteCard(Builder builder) {
+        this.users = builder.getUsers();
+        this.commandInput = builder.getCommandInput();
+        this.transactions = builder.getTransactions();
+    }
+
+    @Override
+    public void execute() {
         for (User user : users) {
             if (user.getUser().getEmail().equals(commandInput.getEmail())) {
                 for (Account account : user.getAccounts()) {

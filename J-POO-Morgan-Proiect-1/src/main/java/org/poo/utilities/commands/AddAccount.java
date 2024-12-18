@@ -8,8 +8,19 @@ import org.poo.utils.Utils;
 
 import java.util.ArrayList;
 
-public class AddAccount {
-    public void addAccount(ArrayList<User> users, CommandInput commandInput, ArrayList<Transaction> transactions) {
+public class AddAccount extends CommandBase {
+    private ArrayList<User> users;
+    private CommandInput commandInput;
+    private ArrayList<Transaction> transactions;
+
+    public AddAccount(Builder builder) {
+        this.users = builder.getUsers();
+        this.commandInput = builder.getCommandInput();
+        this.transactions = builder.getTransactions();
+    }
+
+    @Override
+    public void execute() {
         for (User user : users) {
             if (user.getUser().getEmail().equals(commandInput.getEmail())) {
                 String generatedIBAN = Utils.generateIBAN();

@@ -7,13 +7,30 @@ import org.poo.fileio.CommandInput;
 import org.poo.utilities.users.*;
 import org.poo.utils.Utils;
 
-import java.util.*;
+import java.util.ArrayList;
 
-public class PayOnline {
-    public void payOnline(ArrayList<User> users, CommandInput commandInput,
-                          CurrencyGraph currencyGraph,
-                          ObjectNode commandNode, ObjectMapper objectMapper, ArrayNode output,
-                          ArrayList<Transaction> transactions) {
+public class PayOnline extends CommandBase {
+
+    private final ArrayList<User> users;
+    private final CommandInput commandInput;
+    private final CurrencyGraph currencyGraph;
+    private final ObjectNode commandNode;
+    private final ObjectMapper objectMapper;
+    private final ArrayNode output;
+    private final ArrayList<Transaction> transactions;
+
+    public PayOnline(Builder builder) {
+        this.users = builder.getUsers();
+        this.commandInput = builder.getCommandInput();
+        this.currencyGraph = builder.getCurrencyGraph();
+        this.commandNode = builder.getCommandNode();
+        this.objectMapper = builder.getObjectMapper();
+        this.output = builder.getOutput();
+        this.transactions = builder.getTransactions();
+    }
+
+    @Override
+    public void execute() {
         String targetEmail = commandInput.getEmail();
         String targetCardNumber = commandInput.getCardNumber();
         String paymentCurrency = commandInput.getCurrency();
@@ -25,85 +42,32 @@ public class PayOnline {
                     for (Card card : account.getCards()) {
                         if (card.getCardNumber().equals(targetCardNumber)) {
 
-
-                            if(card.getIsFrozen() == 1) {
-
-                                Transaction transaction = new Transaction(
-                                        "The card is frozen",
-                                        commandInput.getTimestamp(),
-                                        user.getUser().getEmail(),
-                                        account.getIban()
-                                );
-
-                                transactions.add(transaction);
-
-
-
-                                return ;
+                            if (card.getIsFrozen() == 1) {
+                                addTransaction("The card is frozen", user, account);
+                                return;
                             }
-
 
                             double amountInAccountCurrency = currencyGraph.convertCurrency(
                                     paymentCurrency, account.getCurrency(), paymentAmount);
 
-
-                            if(account.getMinBalance() > account.getBalance() - amountInAccountCurrency) {
-
-
-                                Transaction transaction = new Transaction(
-                                        "Insufficient funds",
-                                        commandInput.getTimestamp(),
-                                        user.getUser().getEmail(),
-                                        account.getIban()
-                                );
-
-                                transactions.add(transaction);
-
-
-
-
-                                return ;
+                            if (account.getMinBalance() > account.getBalance() - amountInAccountCurrency) {
+                                addTransaction("Insufficient funds", user, account);
+                                return;
                             }
-
 
                             account.setBalance(account.getBalance() - amountInAccountCurrency);
 
-                            Transaction transaction = new Transaction(
+                            transactions.add(new Transaction(
                                     "Card payment",
                                     commandInput.getTimestamp(),
                                     amountInAccountCurrency,
                                     commandInput.getCommerciant(),
                                     user.getUser().getEmail(),
                                     account.getIban()
-                            );
+                            ));
 
-                            transactions.add(transaction);
-
-                            if(card.getIsOneTimeCard() == 1) {
-
-                                DeleteCard deleteCard = new DeleteCard();
-                                deleteCard.deleteCard(users, commandInput, transactions);
-
-                                Card newCard = new Card();
-                                newCard.setCardNumber(Utils.generateCardNumber());
-
-                                newCard.setStatus("active");
-                                newCard.setIsOneTimeCard(1);
-
-                                Transaction transaction1 = new Transaction(
-                                        "New card created",
-                                        commandInput.getTimestamp(),
-                                        account.getIban(),
-                                        newCard.getCardNumber(),
-                                        user.getUser().getEmail(),
-                                        user.getUser().getEmail(),
-                                        account.getIban()
-                                );
-
-                                transactions.add(transaction1);
-
-
-                                account.getCards().add(account.getCards().size(), newCard);
+                            if (card.getIsOneTimeCard() == 1) {
+                                handleOneTimeCard(user, account, card);
                             }
                             return;
                         }
@@ -112,13 +76,49 @@ public class PayOnline {
             }
         }
 
+        addCardNotFoundError();
+    }
+
+    private void addTransaction(String description, User user, Account account) {
+        transactions.add(new Transaction(
+                description,
+                commandInput.getTimestamp(),
+                user.getUser().getEmail(),
+                account.getIban()
+        ));
+    }
+
+    private void handleOneTimeCard(User user, Account account, Card card) {
+        CommandBase deleteCardCommand = new DeleteCard(
+                new Builder(users, commandInput, transactions)
+        );
+        deleteCardCommand.execute();
+
+        Card newCard = new Card();
+        newCard.setCardNumber(Utils.generateCardNumber());
+        newCard.setStatus("active");
+        newCard.setIsOneTimeCard(1);
+
+        transactions.add(new Transaction(
+                "New card created",
+                commandInput.getTimestamp(),
+                account.getIban(),
+                newCard.getCardNumber(),
+                user.getUser().getEmail(),
+                user.getUser().getEmail(),
+                account.getIban()
+        ));
+
+        account.getCards().add(newCard);
+    }
+
+    private void addCardNotFoundError() {
         ObjectNode errorNode = objectMapper.createObjectNode();
         errorNode.put("timestamp", commandInput.getTimestamp());
         errorNode.put("description", "Card not found");
         commandNode.set("output", errorNode);
         commandNode.put("command", "payOnline");
         commandNode.put("timestamp", commandInput.getTimestamp());
-
         output.add(commandNode);
     }
 

@@ -10,12 +10,28 @@ import org.poo.utilities.users.User;
 
 import java.util.ArrayList;
 
-public class DeleteAccount {
-    public void deleteAccount(final ArrayList<User> users, final CommandInput commandInput,
-                              final ArrayNode output, final ObjectMapper objectMapper,
-                              final ObjectNode commandNode, final ArrayList<Transaction> transactions) {
+public class DeleteAccount extends CommandBase {
 
+    private final ArrayList<User> users;
+    private final CommandInput commandInput;
+    private final ArrayNode output;
+    private final ObjectMapper objectMapper;
+    private final ObjectNode commandNode;
+    private final ArrayList<Transaction> transactions;
+
+    public DeleteAccount(Builder builder) {
+        this.users = builder.getUsers();
+        this.commandInput = builder.getCommandInput();
+        this.output = builder.getOutput();
+        this.objectMapper = builder.getObjectMapper();
+        this.commandNode = builder.getCommandNode();
+        this.transactions = builder.getTransactions();
+    }
+
+    @Override
+    public void execute() {
         boolean accountDeleted = false;
+
         for (User user : users) {
             if (user.getUser().getEmail().equals(commandInput.getEmail())) {
                 for (int i = user.getAccounts().size() - 1; i >= 0; i--) {
@@ -29,7 +45,6 @@ public class DeleteAccount {
         }
 
         commandNode.put("command", commandInput.getCommand());
-
         ObjectNode outputNode = objectMapper.createObjectNode();
 
         if (accountDeleted) {
@@ -44,14 +59,11 @@ public class DeleteAccount {
             );
 
             transactions.add(transaction);
-
         }
 
         outputNode.put("timestamp", commandInput.getTimestamp());
         commandNode.set("output", outputNode);
-
         commandNode.put("timestamp", commandInput.getTimestamp());
-
         output.add(commandNode);
     }
 }

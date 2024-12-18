@@ -34,7 +34,7 @@ public class Start {
             users.add(user);
         }
 
-         exchangeData = new ArrayList<>();
+        exchangeData = new ArrayList<>();
 
         transactions = new ArrayList<>();
 
@@ -75,5 +75,4 @@ public class Start {
             factory.execute();
         }
     }
-
 }

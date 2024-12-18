@@ -7,14 +7,30 @@ import org.poo.fileio.CommandInput;
 import org.poo.utilities.users.Account;
 import org.poo.utilities.users.Transaction;
 import org.poo.utilities.users.User;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SpendingsReport {
-    public void spendingsReport(final ArrayNode output, final ArrayList<User> users,
-                                final ObjectMapper objectMapper, final ObjectNode commandNode,
-                                final CommandInput commandInput, final ArrayList<Transaction> transactions) {
+public class SpendingsReport extends CommandBase {
+    private final ArrayNode output;
+    private final ArrayList<User> users;
+    private final ObjectMapper objectMapper;
+    private final ObjectNode commandNode;
+    private final CommandInput commandInput;
+    private final ArrayList<Transaction> transactions;
+
+    public SpendingsReport(Builder builder) {
+        this.output = builder.getOutput();
+        this.users = builder.getUsers();
+        this.objectMapper = builder.getObjectMapper();
+        this.commandNode = builder.getCommandNode();
+        this.commandInput = builder.getCommandInput();
+        this.transactions = builder.getTransactions();
+    }
+
+    @Override
+    public void execute() {
         commandNode.put("command", commandInput.getCommand());
         commandNode.put("timestamp", commandInput.getTimestamp());
 
@@ -24,7 +40,7 @@ public class SpendingsReport {
                 if (account.getIban().equals(commandInput.getAccount())) {
                     foundAccount = account;
 
-                    if(foundAccount.getAccountType().equals("savings")) {
+                    if (foundAccount.getAccountType().equals("savings")) {
                         ObjectNode outputNode = objectMapper.createObjectNode();
                         outputNode.put("error", "This kind of report is not supported for a saving account");
                         commandNode.set("output", outputNode);
@@ -41,7 +57,6 @@ public class SpendingsReport {
         }
 
         if (foundAccount == null) {
-
             ObjectNode errorNode = objectMapper.createObjectNode();
             errorNode.put("description", "Account not found");
             errorNode.put("timestamp", commandInput.getTimestamp());

@@ -10,12 +10,25 @@ import org.poo.utilities.users.User;
 
 import java.util.ArrayList;
 
-public class Report {
-    public void report(final ArrayNode output, final ArrayList<User> users,
-                       final ObjectMapper objectMapper,
-                       final ObjectNode commandNode,
-                       final CommandInput commandInput, final ArrayList<Transaction> transactions) {
+public class Report extends CommandBase {
+    private final ArrayNode output;
+    private final ArrayList<User> users;
+    private final ObjectMapper objectMapper;
+    private final ObjectNode commandNode;
+    private final CommandInput commandInput;
+    private final ArrayList<Transaction> transactions;
 
+    public Report(Builder builder) {
+        this.output = builder.getOutput();
+        this.users = builder.getUsers();
+        this.objectMapper = builder.getObjectMapper();
+        this.commandNode = builder.getCommandNode();
+        this.commandInput = builder.getCommandInput();
+        this.transactions = builder.getTransactions();
+    }
+
+    @Override
+    public void execute() {
         commandNode.put("command", commandInput.getCommand());
         commandNode.put("timestamp", commandInput.getTimestamp());
 
@@ -57,8 +70,7 @@ public class Report {
         }
 
         for (Transaction transaction : accountTransactions) {
-
-            if(transaction.getReportIban().equals(foundAccount.getIban())) {
+            if (transaction.getReportIban().equals(foundAccount.getIban())) {
 
                 ObjectNode transactionNode = objectMapper.createObjectNode();
                 transactionNode.put("timestamp", transaction.getTimestamp());
@@ -112,10 +124,9 @@ public class Report {
                     transactionNode.put("currency", transaction.getCurrency());
                     transactionNode.put("description", "Split payment of " + formattedAmount + " " + transaction.getCurrency());
 
-                    if(transaction.getErrorAccount() != null) {
+                    if (transaction.getErrorAccount() != null) {
                         transactionNode.put("error", transaction.getErrorAccount());
                     }
-
 
                     ArrayNode involvedAccounts = objectMapper.createArrayNode();
                     for (String acc : transaction.getAccounts()) {

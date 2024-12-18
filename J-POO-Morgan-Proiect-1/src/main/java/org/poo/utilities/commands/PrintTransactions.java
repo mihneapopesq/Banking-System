@@ -5,68 +5,75 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.fileio.CommandInput;
 import org.poo.utilities.users.Transaction;
-import org.poo.utilities.users.User;
 
 import java.util.ArrayList;
 
-public class PrintTransactions {
-    public void printTransactions(final ArrayNode output, final ArrayList<User> users,
-                                  final ObjectMapper objectMapper,
-                                  final ObjectNode commandNode,
-                                  final CommandInput commandInput, final ArrayList<Transaction> transactions) {
+public class PrintTransactions extends CommandBase {
 
+    private final ArrayNode output;
+    private final ObjectMapper objectMapper;
+    private final ObjectNode commandNode;
+    private final CommandInput commandInput;
+    private final ArrayList<Transaction> transactions;
+
+    public PrintTransactions(Builder builder) {
+        this.output = builder.getOutput();
+        this.objectMapper = builder.getObjectMapper();
+        this.commandNode = builder.getCommandNode();
+        this.commandInput = builder.getCommandInput();
+        this.transactions = builder.getTransactions();
+    }
+
+    @Override
+    public void execute() {
         commandNode.put("command", commandInput.getCommand());
         commandNode.put("timestamp", commandInput.getTimestamp());
 
         ArrayNode outputArray = objectMapper.createArrayNode();
 
-        for(Transaction transaction : transactions) {
-
-            if(transaction.getEmail().equals(commandInput.getEmail())) {
-
-
+        for (Transaction transaction : transactions) {
+            if (transaction.getEmail().equals(commandInput.getEmail())) {
                 ObjectNode transactionNode = objectMapper.createObjectNode();
                 transactionNode.put("timestamp", transaction.getTimestamp());
                 transactionNode.put("description", transaction.getDescription());
 
-                if(transaction.getSenderIBAN() != null) {
+                if (transaction.getSenderIBAN() != null) {
                     transactionNode.put("senderIBAN", transaction.getSenderIBAN());
                 }
 
-                if(transaction.getReceiverIBAN() != null) {
+                if (transaction.getReceiverIBAN() != null) {
                     transactionNode.put("receiverIBAN", transaction.getReceiverIBAN());
                 }
 
-                if(transaction.getAmount() != 0 && transaction.getCurrency() != null) {
+                if (transaction.getAmount() != 0 && transaction.getCurrency() != null) {
                     transactionNode.put("amount", transaction.getAmount() + " " + transaction.getCurrency());
                 }
 
-                if(transaction.getTransferType() != null) {
+                if (transaction.getTransferType() != null) {
                     transactionNode.put("transferType", transaction.getTransferType());
                 }
 
-                if(transaction.getCardNumber() != null) {
+                if (transaction.getCardNumber() != null) {
                     transactionNode.put("card", transaction.getCardNumber());
                 }
 
-                if(transaction.getCardHolder() != null) {
+                if (transaction.getCardHolder() != null) {
                     transactionNode.put("cardHolder", transaction.getCardHolder());
                 }
 
-                if(transaction.getIban() != null) {
+                if (transaction.getIban() != null) {
                     transactionNode.put("account", transaction.getIban());
                 }
 
-                if(transaction.getCommerciant() != null) {
+                if (transaction.getCommerciant() != null) {
                     transactionNode.put("commerciant", transaction.getCommerciant());
                 }
 
-                if(transaction.getAmountSpent() > 0) {
+                if (transaction.getAmountSpent() > 0) {
                     transactionNode.put("amount", transaction.getAmountSpent());
                 }
 
                 if (transaction.getAccounts() != null) {
-
                     transactionNode.remove("description");
                     transactionNode.remove("amount");
                     transactionNode.remove("currency");
@@ -78,7 +85,7 @@ public class PrintTransactions {
                     transactionNode.put("currency", transaction.getCurrency());
                     transactionNode.put("description", "Split payment of " + formattedAmount + " " + transaction.getCurrency());
 
-                    if(transaction.getErrorAccount() != null) {
+                    if (transaction.getErrorAccount() != null) {
                         transactionNode.put("error", transaction.getErrorAccount());
                     }
 
