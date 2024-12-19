@@ -9,6 +9,10 @@ import org.poo.utils.Utils;
 
 import java.util.ArrayList;
 
+/**
+ * Command for creating a new card for a user.
+ * Some cards may be one-time-use cards.
+ */
 public class CreateCard extends CommandBase {
 
     private final ArrayList<User> users;
@@ -16,13 +20,22 @@ public class CreateCard extends CommandBase {
     private final ArrayList<Transaction> transactions;
     private final int isOneTimeCard;
 
-    public CreateCard(Builder builder) {
+    /**
+     * Constructs the CreateCard command using the provided builder.
+     *
+     * @param builder the builder containing the dependencies and configuration for this command.
+     */
+    public CreateCard(final Builder builder) {
         this.users = builder.getUsers();
         this.commandInput = builder.getCommandInput();
         this.transactions = builder.getTransactions();
         this.isOneTimeCard = builder.getIsOneTimeCard();
     }
 
+    /**
+     * Executes the command to create a new card for the user.
+     * Adds the card to the specified account and records the transaction.
+     */
     @Override
     public void execute() {
         for (User user : users) {

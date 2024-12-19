@@ -8,17 +8,30 @@ import org.poo.utils.Utils;
 
 import java.util.ArrayList;
 
+/**
+ * Command for adding a new account to a user.
+ * Automatically generates an IBAN and initializes the account with zero balance.
+ */
 public class AddAccount extends CommandBase {
-    private ArrayList<User> users;
-    private CommandInput commandInput;
-    private ArrayList<Transaction> transactions;
+    private final ArrayList<User> users;
+    private final CommandInput commandInput;
+    private final ArrayList<Transaction> transactions;
 
-    public AddAccount(Builder builder) {
+    /**
+     * Constructs the AddAccount command using the provided builder.
+     *
+     * @param builder the builder containing the dependencies and configuration for this command.
+     */
+    public AddAccount(final Builder builder) {
         this.users = builder.getUsers();
         this.commandInput = builder.getCommandInput();
         this.transactions = builder.getTransactions();
     }
 
+    /**
+     * Executes the command to create a new account for a user.
+     * Adds the account to the user's account list and records the transaction.
+     */
     @Override
     public void execute() {
         for (User user : users) {

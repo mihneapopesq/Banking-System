@@ -7,21 +7,40 @@ import org.poo.fileio.CommandInput;
 import org.poo.utilities.users.CurrencyGraph;
 import org.poo.utilities.users.Transaction;
 import org.poo.utilities.users.User;
+
 import java.util.ArrayList;
 
-public class CommandFactory implements CommandExecutable {
-    private String commandType;
-    private ArrayList<User> users;
-    private ObjectNode commandNode;
-    private ArrayNode output;
-    private CommandInput command;
-    private ObjectMapper objectMapper;
-    private CurrencyGraph currencyGraph;
-    private ArrayList<Transaction> transactions;
+/**
+ * Factory class for creating and executing different commands based on the command type.
+ * The factory determines which command to execute.
+ */
+public class CommandFactory extends CommandBase {
+    private final String commandType;
+    private final ArrayList<User> users;
+    private final ObjectNode commandNode;
+    private final ArrayNode output;
+    private final CommandInput command;
+    private final ObjectMapper objectMapper;
+    private final CurrencyGraph currencyGraph;
+    private final ArrayList<Transaction> transactions;
 
-    public CommandFactory(String commandType, ArrayList<User> users, ObjectNode commandNode, ArrayNode output,
-                          CommandInput command, ObjectMapper objectMapper, CurrencyGraph currencyGraph,
-                          ArrayList<Transaction> transactions) {
+    /**
+     * Constructs the CommandFactory with the necessary dependencies.
+     *
+     * @param commandType    the type of the command to execute.
+     * @param users          the list of users in the system.
+     * @param commandNode    the JSON node to store the command details.
+     * @param output         the output array where the command results are added.
+     * @param command        the input details of the command.
+     * @param objectMapper   the object mapper.
+     * @param currencyGraph  the graph for currency conversions.
+     * @param transactions   the list of transactions in the system.
+     */
+    public CommandFactory(final String commandType, final ArrayList<User> users,
+                          final ObjectNode commandNode, final ArrayNode output,
+                          final CommandInput command, final ObjectMapper objectMapper,
+                          final CurrencyGraph currencyGraph,
+                          final ArrayList<Transaction> transactions) {
         this.commandType = commandType;
         this.users = users;
         this.commandNode = commandNode;
@@ -32,6 +51,12 @@ public class CommandFactory implements CommandExecutable {
         this.transactions = transactions;
     }
 
+    /**
+     * Executes the appropriate command based on the command type.
+     * Each case in the switch statement executes the corresponding command.
+     *
+     * @throws IllegalArgumentException if the command type is unknown or unsupported.
+     */
     @Override
     public void execute() {
         switch (commandType) {
@@ -41,102 +66,93 @@ public class CommandFactory implements CommandExecutable {
                 ).execute();
                 break;
             case "createCard":
-                CommandBase createCardCommand = new CreateCard(
+                new CreateCard(
                         new Builder(users, command, transactions, 0)
-                );
-                createCardCommand.execute();break;
+                ).execute();
+                break;
             case "printUsers":
-                CommandBase printUsersCommand = new PrintUsers(
+                new PrintUsers(
                         new Builder(output, users, objectMapper, commandNode, command)
-                );
-                printUsersCommand.execute();
+                ).execute();
                 break;
             case "addFunds":
-                CommandBase addFundsCommand = new AddFunds(new Builder(users, command));
-                addFundsCommand.execute();
+                new AddFunds(new Builder(users, command)).execute();
                 break;
             case "deleteAccount":
-                CommandBase deleteAccountCommand = new DeleteAccount(
-                        new Builder(output, users, objectMapper, commandNode, command, transactions)
-                );
-                deleteAccountCommand.execute();
+                new DeleteAccount(
+                        new Builder(output, users, objectMapper, commandNode,
+                                command, transactions)
+                ).execute();
                 break;
             case "createOneTimeCard":
-                CommandBase createCard = new CreateCard(
+                new CreateCard(
                         new Builder(users, command, transactions, 1)
-                );
-                createCard.execute();break;
+                ).execute();
+                break;
             case "deleteCard":
-                CommandBase deleteCardCommand = new DeleteCard(
+                new DeleteCard(
                         new Builder(users, command, transactions)
-                );
-                deleteCardCommand.execute();
+                ).execute();
                 break;
             case "setMinimumBalance":
-                CommandBase setMinimumBalanceCommand = new SetMinimumBalance(
+                new SetMinimumBalance(
                         new Builder(users, command)
-                );
-                setMinimumBalanceCommand.execute();
+                ).execute();
                 break;
             case "payOnline":
-                CommandBase payOnlineCommand = new PayOnline(
-                        new Builder(users, command, transactions, currencyGraph, objectMapper, commandNode, output)
-                );
-                payOnlineCommand.execute();
+                new PayOnline(
+                        new Builder(users, command, transactions, currencyGraph,
+                                objectMapper, commandNode, output)
+                ).execute();
                 break;
             case "sendMoney":
-                CommandBase sendMoneyCommand = new SendMoney(
+                new SendMoney(
                         new Builder(users, command, transactions, currencyGraph)
-                );
-                sendMoneyCommand.execute();
+                ).execute();
                 break;
             case "setAlias":
-                CommandBase setAliasCommand = new SetAlias(
+                new SetAlias(
                         new Builder(users, command)
-                );
-                setAliasCommand.execute();
+                ).execute();
                 break;
             case "printTransactions":
-                CommandBase printTransactionsCommand = new PrintTransactions(
+                new PrintTransactions(
                         new Builder(output, objectMapper, commandNode, command, transactions)
-                );
-                printTransactionsCommand.execute();
+                ).execute();
                 break;
             case "checkCardStatus":
-                CommandBase checkCardStatusCommand = new CheckCardStatus(
-                        new Builder(output, users, objectMapper, commandNode, command, transactions)
-                );
-                checkCardStatusCommand.execute();
+                new CheckCardStatus(
+                        new Builder(output, users, objectMapper, commandNode,
+                                command, transactions)
+                ).execute();
                 break;
             case "changeInterestRate":
-                CommandBase changeInterestRateCommand = new ChangeInterestRate(
-                        new Builder(output, users, objectMapper, commandNode, command, transactions)
-                );
-                changeInterestRateCommand.execute();
+                new ChangeInterestRate(
+                        new Builder(output, users, objectMapper, commandNode,
+                                command, transactions)
+                ).execute();
                 break;
             case "splitPayment":
-                CommandBase splitPaymentCommand = new SplitPayment(
+                new SplitPayment(
                         new Builder(users, command, transactions, currencyGraph)
-                );
-                splitPaymentCommand.execute();
+                ).execute();
                 break;
             case "report":
-                CommandBase reportCommand = new Report(
-                        new Builder(output, users, objectMapper, commandNode, command, transactions)
-                );
-                reportCommand.execute();
+                new Report(
+                        new Builder(output, users, objectMapper, commandNode,
+                                command, transactions)
+                ).execute();
                 break;
             case "spendingsReport":
-                CommandBase spendingsReportCommand = new SpendingsReport(
-                        new Builder(output, users, objectMapper, commandNode, command, transactions)
-                );
-                spendingsReportCommand.execute();
+                new SpendingsReport(
+                        new Builder(output, users, objectMapper, commandNode,
+                                command, transactions)
+                ).execute();
                 break;
             case "addInterest":
-                CommandBase addInterestCommand = new AddInterest(
+                new AddInterest(
                         new Builder(output, users, objectMapper, commandNode, command)
-                );
-                addInterestCommand.execute();
+                ).execute();
                 break;
             default:
                 throw new IllegalArgumentException("Unknown command type: " + commandType);

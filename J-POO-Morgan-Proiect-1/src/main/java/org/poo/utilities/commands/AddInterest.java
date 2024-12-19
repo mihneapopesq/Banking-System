@@ -9,6 +9,10 @@ import org.poo.utilities.users.User;
 
 import java.util.ArrayList;
 
+/**
+ * Command for adding interest to a savings account.
+ * Interest is added to the balance based on the account's interest rate.
+ */
 public class AddInterest extends CommandBase {
     private final ArrayNode output;
     private final ArrayList<User> users;
@@ -16,7 +20,12 @@ public class AddInterest extends CommandBase {
     private final ObjectNode commandNode;
     private final CommandInput commandInput;
 
-    public AddInterest(Builder builder) {
+    /**
+     * Constructs the AddInterest command using the provided builder.
+     *
+     * @param builder the builder containing the dependencies and configuration for this command.
+     */
+    public AddInterest(final Builder builder) {
         this.output = builder.getOutput();
         this.users = builder.getUsers();
         this.objectMapper = builder.getObjectMapper();
@@ -24,24 +33,22 @@ public class AddInterest extends CommandBase {
         this.commandInput = builder.getCommandInput();
     }
 
+    /**
+     * Executes the command to add interest to a savings account.
+     * If the account is not a savings account, an error is added to the output.
+     */
     @Override
     public void execute() {
         for (User user : users) {
             for (Account account : user.getAccounts()) {
                 if (account.getIban().equals(commandInput.getAccount())) {
-
                     if (!account.getAccountType().equals("savings")) {
-                        ObjectNode outputNode = objectMapper.createObjectNode();
-                        commandNode.put("command", commandInput.getCommand());
-                        outputNode.put("description", "This is not a savings account");
-                        outputNode.put("timestamp", commandInput.getTimestamp());
-                        commandNode.put("timestamp", commandInput.getTimestamp());
-                        commandNode.set("output", outputNode);
-                        output.add(commandNode);
+                        account.addErrorResponse(objectMapper, commandNode, output,
+                                commandInput, "This is not a savings account");
                         return;
                     }
-
-                    account.setBalance(account.getBalance() + account.getBalance() * account.getInterestRate());
+                    account.setBalance(account.getBalance()
+                            + account.getBalance() * account.getInterestRate());
                 }
             }
         }

@@ -12,7 +12,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Command for generating a spendings report for a specific account.
+ */
 public class SpendingsReport extends CommandBase {
+
     private final ArrayNode output;
     private final ArrayList<User> users;
     private final ObjectMapper objectMapper;
@@ -20,7 +24,12 @@ public class SpendingsReport extends CommandBase {
     private final CommandInput commandInput;
     private final ArrayList<Transaction> transactions;
 
-    public SpendingsReport(Builder builder) {
+    /**
+     * Constructs the SpendingsReport command using the provided builder.
+     *
+     * @param builder the builder containing dependencies and configuration for this command.
+     */
+    public SpendingsReport(final Builder builder) {
         this.output = builder.getOutput();
         this.users = builder.getUsers();
         this.objectMapper = builder.getObjectMapper();
@@ -29,6 +38,9 @@ public class SpendingsReport extends CommandBase {
         this.transactions = builder.getTransactions();
     }
 
+    /**
+     * Executes the command to generate a spendings report.
+     */
     @Override
     public void execute() {
         commandNode.put("command", commandInput.getCommand());
@@ -42,7 +54,8 @@ public class SpendingsReport extends CommandBase {
 
                     if (foundAccount.getAccountType().equals("savings")) {
                         ObjectNode outputNode = objectMapper.createObjectNode();
-                        outputNode.put("error", "This kind of report is not supported for a saving account");
+                        outputNode.put("error",
+                                "This kind of report is not supported for a saving account");
                         commandNode.set("output", outputNode);
                         output.add(commandNode);
                         return;
@@ -74,7 +87,8 @@ public class SpendingsReport extends CommandBase {
         for (Transaction transaction : transactions) {
             if (transaction.getTimestamp() >= commandInput.getStartTimestamp()
                     && transaction.getTimestamp() <= commandInput.getEndTimestamp()) {
-                if (transaction.getReportIban() != null && transaction.getReportIban().equals(foundAccount.getIban())) {
+                if (transaction.getReportIban() != null
+                        && transaction.getReportIban().equals(foundAccount.getIban())) {
                     accountTransactions.add(transaction);
                 }
             }
@@ -84,7 +98,8 @@ public class SpendingsReport extends CommandBase {
         for (Transaction t : accountTransactions) {
             if (t.getCommerciant() != null && t.getAmountSpent() > 0) {
                 commerciantTotals.put(t.getCommerciant(),
-                        commerciantTotals.getOrDefault(t.getCommerciant(), 0.0) + t.getAmountSpent());
+                        commerciantTotals.getOrDefault(t.getCommerciant(), 0.0)
+                                + t.getAmountSpent());
             }
         }
 

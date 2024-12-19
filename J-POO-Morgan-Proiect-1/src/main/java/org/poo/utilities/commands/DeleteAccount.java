@@ -10,6 +10,10 @@ import org.poo.utilities.users.User;
 
 import java.util.ArrayList;
 
+/**
+ * Command for deleting a user account.
+ * An account can only be deleted if its balance is zero.
+ */
 public class DeleteAccount extends CommandBase {
 
     private final ArrayList<User> users;
@@ -19,7 +23,12 @@ public class DeleteAccount extends CommandBase {
     private final ObjectNode commandNode;
     private final ArrayList<Transaction> transactions;
 
-    public DeleteAccount(Builder builder) {
+    /**
+     * Constructs the DeleteAccount command using the provided builder.
+     *
+     * @param builder the builder containing the dependencies and configuration for this command.
+     */
+    public DeleteAccount(final Builder builder) {
         this.users = builder.getUsers();
         this.commandInput = builder.getCommandInput();
         this.output = builder.getOutput();
@@ -28,6 +37,11 @@ public class DeleteAccount extends CommandBase {
         this.transactions = builder.getTransactions();
     }
 
+    /**
+     * Executes the command to delete a user account.
+     * If the account balance is zero, the account is deleted.
+     * Otherwise, an error is added to the output and a transaction is recorded.
+     */
     @Override
     public void execute() {
         boolean accountDeleted = false;
@@ -50,14 +64,14 @@ public class DeleteAccount extends CommandBase {
         if (accountDeleted) {
             outputNode.put("success", "Account deleted");
         } else {
-            outputNode.put("error", "Account couldn't be deleted - see org.poo.transactions for details");
+            outputNode.put("error",
+                    "Account couldn't be deleted - see org.poo.transactions for details");
 
             Transaction transaction = new Transaction(
                     "Account couldn't be deleted - there are funds remaining",
                     commandInput.getTimestamp(),
                     commandInput.getEmail()
             );
-
             transactions.add(transaction);
         }
 

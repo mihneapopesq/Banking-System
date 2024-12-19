@@ -8,6 +8,10 @@ import org.poo.utilities.users.Transaction;
 
 import java.util.ArrayList;
 
+/**
+ * Command for printing transactions associated with a specific email.
+ * Filters and displays transactions for the user specified in the command input.
+ */
 public class PrintTransactions extends CommandBase {
 
     private final ArrayNode output;
@@ -16,7 +20,12 @@ public class PrintTransactions extends CommandBase {
     private final CommandInput commandInput;
     private final ArrayList<Transaction> transactions;
 
-    public PrintTransactions(Builder builder) {
+    /**
+     * Constructs the PrintTransactions command using the provided builder.
+     *
+     * @param builder the builder containing the dependencies and configuration for this command.
+     */
+    public PrintTransactions(final Builder builder) {
         this.output = builder.getOutput();
         this.objectMapper = builder.getObjectMapper();
         this.commandNode = builder.getCommandNode();
@@ -24,6 +33,11 @@ public class PrintTransactions extends CommandBase {
         this.transactions = builder.getTransactions();
     }
 
+    /**
+     * Executes the command to filter and print transactions.
+     * Iterates through the list of transactions and outputs those that match the email
+     * specified in the command input.
+     */
     @Override
     public void execute() {
         commandNode.put("command", commandInput.getCommand());
@@ -34,68 +48,7 @@ public class PrintTransactions extends CommandBase {
         for (Transaction transaction : transactions) {
             if (transaction.getEmail().equals(commandInput.getEmail())) {
                 ObjectNode transactionNode = objectMapper.createObjectNode();
-                transactionNode.put("timestamp", transaction.getTimestamp());
-                transactionNode.put("description", transaction.getDescription());
-
-                if (transaction.getSenderIBAN() != null) {
-                    transactionNode.put("senderIBAN", transaction.getSenderIBAN());
-                }
-
-                if (transaction.getReceiverIBAN() != null) {
-                    transactionNode.put("receiverIBAN", transaction.getReceiverIBAN());
-                }
-
-                if (transaction.getAmount() != 0 && transaction.getCurrency() != null) {
-                    transactionNode.put("amount", transaction.getAmount() + " " + transaction.getCurrency());
-                }
-
-                if (transaction.getTransferType() != null) {
-                    transactionNode.put("transferType", transaction.getTransferType());
-                }
-
-                if (transaction.getCardNumber() != null) {
-                    transactionNode.put("card", transaction.getCardNumber());
-                }
-
-                if (transaction.getCardHolder() != null) {
-                    transactionNode.put("cardHolder", transaction.getCardHolder());
-                }
-
-                if (transaction.getIban() != null) {
-                    transactionNode.put("account", transaction.getIban());
-                }
-
-                if (transaction.getCommerciant() != null) {
-                    transactionNode.put("commerciant", transaction.getCommerciant());
-                }
-
-                if (transaction.getAmountSpent() > 0) {
-                    transactionNode.put("amount", transaction.getAmountSpent());
-                }
-
-                if (transaction.getAccounts() != null) {
-                    transactionNode.remove("description");
-                    transactionNode.remove("amount");
-                    transactionNode.remove("currency");
-                    transactionNode.remove("accounts");
-
-                    String formattedAmount = String.format("%.2f", transaction.getAmount());
-
-                    transactionNode.put("amount", transaction.getAmountSpent());
-                    transactionNode.put("currency", transaction.getCurrency());
-                    transactionNode.put("description", "Split payment of " + formattedAmount + " " + transaction.getCurrency());
-
-                    if (transaction.getErrorAccount() != null) {
-                        transactionNode.put("error", transaction.getErrorAccount());
-                    }
-
-                    ArrayNode accountsArray = objectMapper.createArrayNode();
-                    for (String account : transaction.getAccounts()) {
-                        accountsArray.add(account);
-                    }
-                    transactionNode.set("involvedAccounts", accountsArray);
-                }
-
+                transaction.populateTransactionNode(transaction, transactionNode, objectMapper);
                 outputArray.add(transactionNode);
             }
         }

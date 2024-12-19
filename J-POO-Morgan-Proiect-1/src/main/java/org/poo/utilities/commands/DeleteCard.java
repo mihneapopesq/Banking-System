@@ -8,18 +8,30 @@ import org.poo.utilities.users.User;
 
 import java.util.ArrayList;
 
+/**
+ * Command for deleting a card from a user's account.
+ */
 public class DeleteCard extends CommandBase {
 
     private final ArrayList<User> users;
     private final CommandInput commandInput;
     private final ArrayList<Transaction> transactions;
 
-    public DeleteCard(Builder builder) {
+    /**
+     * Constructs the DeleteCard command using the provided builder.
+     *
+     * @param builder the builder containing the dependencies and configuration for this command.
+     */
+    public DeleteCard(final Builder builder) {
         this.users = builder.getUsers();
         this.commandInput = builder.getCommandInput();
         this.transactions = builder.getTransactions();
     }
 
+    /**
+     * Executes the command to delete a card.
+     * If the card exists, it is removed from the account, and a transaction is recorded.
+     */
     @Override
     public void execute() {
         for (User user : users) {

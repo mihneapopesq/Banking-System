@@ -5,14 +5,28 @@ import org.poo.utilities.users.Account;
 import org.poo.utilities.users.User;
 import java.util.ArrayList;
 
+/**
+ * Command for setting an alias for a specific account.
+ */
 public class SetAlias extends CommandBase {
+
     private final ArrayList<User> users;
     private final CommandInput commandInput;
 
-    public SetAlias(Builder builder) {
+    /**
+     * Constructs the SetAlias command using the provided builder.
+     *
+     * @param builder the builder containing dependencies and configuration for this command.
+     */
+    public SetAlias(final Builder builder) {
         this.users = builder.getUsers();
         this.commandInput = builder.getCommandInput();
     }
+
+    /**
+     * Executes the command to set an alias for a specific account.
+     * Updates the account's alias if the user and account match the provided input.
+     */
 
     @Override
     public void execute() {

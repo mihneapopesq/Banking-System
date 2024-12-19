@@ -17,7 +17,7 @@ public class User {
         this.accounts = new ArrayList<>();
     }
 
-    public User(UserInput user, ArrayList<Account> accounts) {
+    public User(final UserInput user, final ArrayList<Account> accounts) {
         this.user = user;
         this.accounts = accounts != null ? accounts : new ArrayList<>();
     }

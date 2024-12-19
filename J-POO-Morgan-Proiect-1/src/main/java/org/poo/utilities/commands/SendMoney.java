@@ -8,19 +8,31 @@ import org.poo.utilities.users.User;
 
 import java.util.ArrayList;
 
+/**
+ * Command for sending money between accounts.
+ */
 public class SendMoney extends CommandBase {
     private final ArrayList<User> users;
     private final CommandInput commandInput;
     private final ArrayList<Transaction> transactions;
     private final CurrencyGraph currencyGraph;
 
-    public SendMoney(Builder builder) {
+    /**
+     * Constructs the SendMoney command using the provided builder.
+     *
+     * @param builder the builder containing the dependencies and configuration for this command.
+     */
+    public SendMoney(final Builder builder) {
         this.users = builder.getUsers();
         this.commandInput = builder.getCommandInput();
         this.transactions = builder.getTransactions();
         this.currencyGraph = builder.getCurrencyGraph();
     }
 
+    /**
+     * Executes the command to send money.
+     * Validates account balances and performs currency conversion before transferring funds.
+     */
     @Override
     public void execute() {
         Account senderAccount = null;
@@ -51,7 +63,7 @@ public class SendMoney extends CommandBase {
 
         double amount = commandInput.getAmount();
 
-        if (receiverAccount == null || senderAccount == null || senderUser == null) {
+        if (receiverAccount == null || senderAccount == null) {
             return;
         }
 
@@ -77,7 +89,8 @@ public class SendMoney extends CommandBase {
             return;
         }
 
-        double rightAmount = currencyGraph.convertCurrency(senderAccount.getCurrency(), receiverAccount.getCurrency(), amount);
+        double rightAmount = currencyGraph.convertCurrency(senderAccount.getCurrency(),
+                receiverAccount.getCurrency(), amount);
 
         senderAccount.setBalance(senderAccount.getBalance() - amount);
         receiverAccount.setBalance(receiverAccount.getBalance() + rightAmount);

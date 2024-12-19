@@ -10,6 +10,10 @@ import org.poo.utilities.users.User;
 
 import java.util.ArrayList;
 
+/**
+ * Command for changing the interest rate of a savings account.
+ * Records the change as a transaction and updates the account's interest rate.
+ */
 public class ChangeInterestRate extends CommandBase {
     private final ArrayNode output;
     private final ArrayList<User> users;
@@ -18,7 +22,12 @@ public class ChangeInterestRate extends CommandBase {
     private final CommandInput commandInput;
     private final ArrayList<Transaction> transactions;
 
-    public ChangeInterestRate(Builder builder) {
+    /**
+     * Constructs the ChangeInterestRate command using the provided builder.
+     *
+     * @param builder the builder containing the dependencies and configuration for this command.
+     */
+    public ChangeInterestRate(final Builder builder) {
         this.output = builder.getOutput();
         this.users = builder.getUsers();
         this.objectMapper = builder.getObjectMapper();
@@ -27,6 +36,10 @@ public class ChangeInterestRate extends CommandBase {
         this.transactions = builder.getTransactions();
     }
 
+    /**
+     * Executes the command to change the interest rate of a savings account.
+     * If the account is not a savings account, an error is added to the output.
+     */
     @Override
     public void execute() {
         for (User user : users) {
@@ -34,21 +47,16 @@ public class ChangeInterestRate extends CommandBase {
                 if (account.getIban().equals(commandInput.getAccount())) {
 
                     if (!account.getAccountType().equals("savings")) {
-                        ObjectNode outputNode = objectMapper.createObjectNode();
-                        commandNode.put("command", commandInput.getCommand());
-                        outputNode.put("description", "This is not a savings account");
-                        outputNode.put("timestamp", commandInput.getTimestamp());
-                        commandNode.put("timestamp", commandInput.getTimestamp());
-                        commandNode.set("output", outputNode);
-                        output.add(commandNode);
+                        account.addErrorResponse(objectMapper, commandNode, output,
+                                commandInput, "This is not a savings account");
                         return;
                     }
 
                     account.setInterestRate(commandInput.getInterestRate());
 
                     Transaction transaction = new Transaction(
-                            "Interest rate of the account changed to " + commandInput.getInterestRate(),
-                            commandInput.getTimestamp(),
+                            "Interest rate of the account changed to "
+                                    + commandInput.getInterestRate(), commandInput.getTimestamp(),
                             user.getUser().getEmail()
                     );
                     transactions.add(transaction);

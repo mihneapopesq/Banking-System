@@ -1,45 +1,96 @@
-# Project Assignment POO  - J. POO Morgan - Phase One
+#### Copyright 2024 Popescu Mihnea-Gabriel 321CA
 
-![](https://s.yimg.com/ny/api/res/1.2/aN0SfZTtLF5hLNO0wIN3gg--/YXBwaWQ9aGlnaGxhbmRlcjt3PTcwNTtoPTQyNztjZj13ZWJw/https://o.aolcdn.com/hss/storage/midas/b23d8b7f62a50a7b79152996890aa052/204855412/fit.gif)
+## Description
+This project is a simulation of a simple banking system. The system is composed of a bank,
+which has a number of users. The users can have multiple accounts, each of them with multiple
+cards. They can peform various operations on their accounts, such as sending money, paying online,
+split the payments. They can also add or delete accounts or cards. Each account has a unique currency,
+and the user can exchange money between accounts with different currencies.
 
-#### Assignment Link: [https://ocw.cs.pub.ro/courses/poo-ca-cd/teme/2024/proiect-e1](https://ocw.cs.pub.ro/courses/poo-ca-cd/teme/2024/proiect-e1)
+## Classes and Packages
+I partitioned this project in the following way:
+- commands package which has all the classes that implement the commands that the user can give
+- users package which has all the classes that implement the users and their accounts and cards
+- the Start class in main package which reads the input and calls the appropriate methods
 
-## Skel Structure
+### Commands Package
+Each of the commands extend the CommandBase abstract class, which has a method that is
+called by the Start class. The Start class reads the input and calls the method of the
+command that the user wants to execute. The `CommandFactory` class dynamically creates
+and executes commands based on the user's input. It uses a switch statement to identify
+the correct command and delegates execution. This modular approach makes it easy to add
+new commands while keeping the system organized and extensible. They are implemented in
+such way to be able to implement new features easily in the future.
 
-* src/
-    * checker/ - checker files
-    * fileio/ - contains classes used to read data from the json files
-    * main/
-        * Main - the Main class runs the checker on your implementation. Add the entry point to your implementation in it. Run Main to test your implementation from the IDE or from command line.
-        * Test - run the main method from Test class with the name of the input file from the command line and the result will be written
-          to the out.txt file. Thus, you can compare this result with ref.
-* input/ - contains the tests in JSON format
-* ref/ - contains all reference output for the tests in JSON format
+### Users Package
+This package contains the classes that implement the users, accounts, cards, transactions and
+the currency graph. The currency graph is implemented as a directed graph, where the edges
+represent the exchange rate between two currencies. The graph is used to calculate the exchange
+rate between two currencies using Dijkstra's algorithm. The User class has a list of accounts,
+and each account has a list of cards. The User class also has a list of transactions, which
+keeps track of all the transactions that the user has made.
 
-## Tests
+### Flow
+The flow of the banking system begins with the **Start class** reading the user's input.
+The input contains the command the user wants to execute along with any necessary parameters.
+Based on this input, the **CommandFactory** is called, which identifies the appropriate
+command class to execute. The factory dynamically creates and invokes the corresponding command.
 
-Tests Basic 1 - 8: Infrastructure \
-Tests Functional 9 - 17: Advanced \
-Tests Flow 18 - 20: Large Input
+The `Builder` class is used to simplify the creation of command objects in the `CommandFactory`.
+It follows the **Builder pattern**, allowing for the construction of objects like commands
+with multiple optional and mandatory parameters. This class helps organize the dependencies required
+by commands, such as users, transactions, and currency graph, without forcing the caller to pass all
+arguments every time. It provides various constructors to set different combinations of parameters,
+making it flexible and extensible for different command scenarios. This approach improves readability,
+maintainability, and the ability to add new commands in the future.
 
-1. test01_create - 2p
-2. test02_delete - 2p
-3. test03_one_time_card - 2p
-4. test04_funds - 2p
-5. test05_money_flow - 2p
-6. test06_non_existing - 2p
-7. test07_send_money_part1 - 3p
-8. test08_send_money_part2 - 3p
-9. test09_print_transactions - 3p
-10. test10_errors - 3p
-11. test11_card_status - 5p
-12. test12_continuous_payments - 5p
-13. test13_savings_account - 5p
-14. test14_split_payments - 5p
-15. test15_every_payment - 5p
-16. test16_report - 5p
-17. test17_spendings_report - 5p
-18. test18_large_input_1 - 7p
-19. test19_large_input_2 - 7p
-20. test19_large_input_3 - 7p
+Each command extends the **CommandBase** class and is responsible for performing specific
+operations on the user’s accounts and cards. Depending on the operation, commands can manipulate
+account balances, perform currency exchanges, create or delete accounts, and more. After the command
+is executed, the results are stored in the **output** array and returned to the user.
 
+The **User** class manages user-related data, such as their list of accounts, cards, and transactions.
+The **Account** class handles the operations related to individual accounts, and the **Card** class
+deals with card-related actions. The **CurrencyGraph** enables currency exchange between accounts
+with different currencies, using Dijkstra’s algorithm to calculate the conversion rate.
+
+Once the operation is completed, the **output** is populated with the necessary data and returned
+to the user, providing feedback on the success or failure of the operation.
+
+### Key Classes
+- **Start**: The entry point of the system. It initializes the system with user data and commands,
+then delegates execution to the `CommandFactory`, which handles command execution and stores results.
+
+- **CommandFactory**: A factory class that creates and executes commands based on the user's input.
+It uses the Builder pattern to inject dependencies into commands and calls the correct command class.
+
+- **CommandBase**: An abstract class for all commands, defining a common structure and ensuring
+consistency in how commands are executed.
+
+- **User**: Represents a user in the system, holding personal data and a list of accounts and
+transactions. It facilitates user-specific operations.
+
+- **Account**: Represents a bank account, including details like IBAN, balance, and currency.
+It handles operations like balance manipulation and currency conversion.
+
+- **Card**: Represents a card linked to an account, with attributes such as card number, status,
+and actions like freezing or deleting cards.
+
+- **Transaction**: Represents a financial transaction, tracking the amount, sender/receiver,
+and timestamp. It logs financial activity for auditing.
+
+- **CurrencyGraph**: A directed graph storing exchange rates between currencies, using Dijkstra's
+algorithm to facilitate currency conversions.
+
+- **Builder**: Simplifies the creation of command objects, allowing for flexible and clear
+construction of commands with optional parameters.
+
+### OOP Principles
+- Inheritance
+- Polymorphism
+- Patterns : Factory Pattern, Builder Pattern
+- Packages
+- Lombok
+- Overriding
+- Abstract classes
+- Encapsulation

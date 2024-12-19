@@ -11,6 +11,9 @@ import org.poo.utilities.users.User;
 
 import java.util.ArrayList;
 
+/**
+ * Command for checking the status of a card and freezing it if funds are insufficient.
+ */
 public class CheckCardStatus extends CommandBase {
     private final ArrayList<User> users;
     private final CommandInput commandInput;
@@ -19,7 +22,12 @@ public class CheckCardStatus extends CommandBase {
     private final ObjectMapper objectMapper;
     private final ArrayList<Transaction> transactions;
 
-    public CheckCardStatus(Builder builder) {
+    /**
+     * Constructs the CheckCardStatus command using the provided builder.
+     *
+     * @param builder the builder containing the dependencies and configuration for this command.
+     */
+    public CheckCardStatus(final Builder builder) {
         this.users = builder.getUsers();
         this.commandInput = builder.getCommandInput();
         this.output = builder.getOutput();
@@ -28,6 +36,12 @@ public class CheckCardStatus extends CommandBase {
         this.transactions = builder.getTransactions();
     }
 
+    /**
+     * Executes the command, checking the status of a card.
+     * If the card's associated account balance is insufficient, the card is frozen,
+     * and a corresponding transaction is recorded.
+     * If the card is not found, an error message is added to the output.
+     */
     @Override
     public void execute() {
         for (User user : users) {
@@ -36,7 +50,8 @@ public class CheckCardStatus extends CommandBase {
                     if (card.getCardNumber().equals(commandInput.getCardNumber())) {
                         if (account.getBalance() - account.getMinBalance() <= 30) {
                             Transaction transaction = new Transaction(
-                                    "You have reached the minimum amount of funds, the card will be frozen",
+                                    "You have reached the minimum amount of funds, "
+                                            + "the card will be frozen",
                                     commandInput.getTimestamp(),
                                     user.getUser().getEmail(),
                                     account.getIban()

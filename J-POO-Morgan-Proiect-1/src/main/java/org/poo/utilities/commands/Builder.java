@@ -23,64 +23,72 @@ public class Builder {
     private int isOneTimeCard;                    // optional
     private ArrayNode output;                     // optional
 
-
-
-
-    public Builder(ArrayList<User> users, CommandInput commandInput) {
+    public Builder(final ArrayList<User> users, final CommandInput commandInput) {
         this(users, commandInput, null, null, null, null, 0);
     }
 
-    public Builder(ArrayList<User> users, CommandInput commandInput, ArrayList<Transaction> transactions) {
+    public Builder(final ArrayList<User> users, final CommandInput commandInput,
+                   final ArrayList<Transaction> transactions) {
         this(users, commandInput, transactions, null, null, null, 0);
     }
 
-    public Builder(ArrayList<User> users, CommandInput commandInput, ArrayList<Transaction> transactions, CurrencyGraph currencyGraph) {
+    public Builder(final ArrayList<User> users, final CommandInput commandInput,
+                   final ArrayList<Transaction> transactions, final CurrencyGraph currencyGraph) {
         this(users, commandInput, transactions, currencyGraph, null, null, 0);
     }
 
-    public Builder(ArrayList<User> users, CommandInput commandInput, ArrayList<Transaction> transactions, CurrencyGraph currencyGraph, ObjectMapper objectMapper) {
+    public Builder(final ArrayList<User> users, final CommandInput commandInput,
+                   final ArrayList<Transaction> transactions, final CurrencyGraph currencyGraph,
+                   final ObjectMapper objectMapper) {
         this(users, commandInput, transactions, currencyGraph, objectMapper, null, 0);
     }
 
-    public Builder(ArrayList<User> users, CommandInput commandInput, ArrayList<Transaction> transactions, CurrencyGraph currencyGraph, ObjectMapper objectMapper, ObjectNode commandNode) {
+    public Builder(final ArrayList<User> users, final CommandInput commandInput,
+                   final ArrayList<Transaction> transactions, final CurrencyGraph currencyGraph,
+                   final ObjectMapper objectMapper, final ObjectNode commandNode) {
         this(users, commandInput, transactions, currencyGraph, objectMapper, commandNode, 0);
     }
 
-    public Builder(ArrayNode output, ArrayList<User> users, ObjectMapper objectMapper,
-                   ObjectNode commandNode, CommandInput commandInput) {
+    public Builder(final ArrayNode output, final ArrayList<User> users,
+                   final ObjectMapper objectMapper, final ObjectNode commandNode,
+                   final CommandInput commandInput) {
         this(users, commandInput, null, null, objectMapper, commandNode, 0);
         this.output = output;
     }
 
-    public Builder(ArrayNode output, ArrayList<User> users,
-                   ObjectMapper objectMapper,
-                   ObjectNode commandNode,
-                   CommandInput commandInput, ArrayList<Transaction> transactions) {
+    public Builder(final ArrayNode output, final ArrayList<User> users,
+                   final ObjectMapper objectMapper,
+                   final ObjectNode commandNode,
+                   final CommandInput commandInput,
+                   final ArrayList<Transaction> transactions) {
         this(users, commandInput, transactions, null, objectMapper, commandNode, 0);
         this.output = output;
     }
 
-    public Builder(ArrayNode output,
-                   ObjectMapper objectMapper,
-                   ObjectNode commandNode,
-                   CommandInput commandInput, ArrayList<Transaction> transactions) {
+    public Builder(final ArrayNode output, final ObjectMapper objectMapper,
+                   final ObjectNode commandNode, final CommandInput commandInput,
+                   final ArrayList<Transaction> transactions) {
         this(null, commandInput, transactions, null, objectMapper, commandNode, 0);
         this.output = output;
     }
 
-    public Builder(ArrayList<User> users, CommandInput commandInput,
-                   ArrayList<Transaction> transactions, int isOneTimeCard) {
+    public Builder(final ArrayList<User> users, final CommandInput commandInput,
+                   final ArrayList<Transaction> transactions, final int isOneTimeCard) {
         this(users, commandInput, transactions, null, null, null, isOneTimeCard);
     }
 
-    public Builder(ArrayList<User> users, CommandInput commandInput, ArrayList<Transaction> transactions,
-                   CurrencyGraph currencyGraph, ObjectMapper objectMapper, ObjectNode commandNode,
-                   ArrayNode output) {
+    public Builder(final ArrayList<User> users, final CommandInput commandInput,
+                   final ArrayList<Transaction> transactions,
+                   final CurrencyGraph currencyGraph, final ObjectMapper objectMapper,
+                   final ObjectNode commandNode, final ArrayNode output) {
         this(users, commandInput, transactions, currencyGraph, objectMapper, commandNode, 0);
         this.output = output;
     }
 
-    public Builder(ArrayList<User> users, CommandInput commandInput, ArrayList<Transaction> transactions, CurrencyGraph currencyGraph, ObjectMapper objectMapper, ObjectNode commandNode, int isOneTimeCard) {
+    public Builder(final ArrayList<User> users, final CommandInput commandInput,
+                   final ArrayList<Transaction> transactions, final CurrencyGraph currencyGraph,
+                   final ObjectMapper objectMapper, final ObjectNode commandNode,
+                   final int isOneTimeCard) {
         this.users = users;
         this.commandInput = commandInput;
         this.transactions = transactions;

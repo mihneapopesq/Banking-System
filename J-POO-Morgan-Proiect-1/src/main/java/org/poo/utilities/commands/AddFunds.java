@@ -6,15 +6,27 @@ import org.poo.utilities.users.User;
 
 import java.util.ArrayList;
 
+/**
+ * Command for adding funds to a specified account.
+ */
 public class AddFunds extends CommandBase {
-    private ArrayList<User> users;
-    private CommandInput commandInput;
+    private final ArrayList<User> users;
+    private final CommandInput commandInput;
 
-    public AddFunds(Builder builder) {
+    /**
+     * Constructs the AddFunds command using the provided builder.
+     *
+     * @param builder the builder containing the dependencies and configuration for this command.
+     */
+    public AddFunds(final Builder builder) {
         this.users = builder.getUsers();
         this.commandInput = builder.getCommandInput();
     }
 
+    /**
+     * Executes the command to add funds to a specified account.
+     * Updates the account's balance by adding the specified amount.
+     */
     @Override
     public void execute() {
         for (User user : users) {

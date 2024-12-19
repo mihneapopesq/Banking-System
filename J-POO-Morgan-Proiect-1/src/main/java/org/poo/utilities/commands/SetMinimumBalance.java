@@ -6,15 +6,27 @@ import org.poo.utilities.users.User;
 
 import java.util.ArrayList;
 
+/**
+ * Command for setting a minimum balance for a specific account.
+ */
 public class SetMinimumBalance extends CommandBase {
+
     private final ArrayList<User> users;
     private final CommandInput commandInput;
 
-    public SetMinimumBalance(Builder builder) {
+    /**
+     * Constructs the SetMinimumBalance command using the provided builder.
+     *
+     * @param builder the builder containing dependencies and configuration for this command.
+     */
+    public SetMinimumBalance(final Builder builder) {
         this.users = builder.getUsers();
         this.commandInput = builder.getCommandInput();
     }
 
+    /**
+     * Executes the command to set the minimum balance for a specific account.
+     */
     @Override
     public void execute() {
         for (User user : users) {

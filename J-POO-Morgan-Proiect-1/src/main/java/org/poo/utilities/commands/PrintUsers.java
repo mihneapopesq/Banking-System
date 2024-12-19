@@ -10,6 +10,9 @@ import org.poo.utilities.users.Card;
 
 import java.util.ArrayList;
 
+/**
+ * Command for printing detailed information about all users.
+ */
 public class PrintUsers extends CommandBase {
 
     private final ArrayNode output;
@@ -18,7 +21,12 @@ public class PrintUsers extends CommandBase {
     private final ObjectNode commandNode;
     private final CommandInput command;
 
-    public PrintUsers(Builder builder) {
+    /**
+     * Constructs the PrintUsers command using the provided builder.
+     *
+     * @param builder the builder containing the dependencies and configuration for this command.
+     */
+    public PrintUsers(final Builder builder) {
         this.output = builder.getOutput();
         this.users = builder.getUsers();
         this.objectMapper = builder.getObjectMapper();
@@ -26,6 +34,9 @@ public class PrintUsers extends CommandBase {
         this.command = builder.getCommandInput();
     }
 
+    /**
+     * Executes the command to print information about all users.
+     */
     @Override
     public void execute() {
         commandNode.put("command", command.getCommand());
@@ -69,5 +80,4 @@ public class PrintUsers extends CommandBase {
         commandNode.put("timestamp", command.getTimestamp());
         output.add(commandNode);
     }
-
 }

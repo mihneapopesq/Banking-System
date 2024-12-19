@@ -10,7 +10,12 @@ import org.poo.utilities.users.User;
 
 import java.util.ArrayList;
 
+/**
+ * Command for generating a report for a specific account.
+ * Includes account details and transactions within a specified time range.
+ */
 public class Report extends CommandBase {
+
     private final ArrayNode output;
     private final ArrayList<User> users;
     private final ObjectMapper objectMapper;
@@ -18,7 +23,12 @@ public class Report extends CommandBase {
     private final CommandInput commandInput;
     private final ArrayList<Transaction> transactions;
 
-    public Report(Builder builder) {
+    /**
+     * Constructs the Report command using the provided builder.
+     *
+     * @param builder the builder containing dependencies and configuration for this command.
+     */
+    public Report(final Builder builder) {
         this.output = builder.getOutput();
         this.users = builder.getUsers();
         this.objectMapper = builder.getObjectMapper();
@@ -27,120 +37,74 @@ public class Report extends CommandBase {
         this.transactions = builder.getTransactions();
     }
 
+    /**
+     * Executes the command to generate a report.
+     */
     @Override
     public void execute() {
         commandNode.put("command", commandInput.getCommand());
         commandNode.put("timestamp", commandInput.getTimestamp());
 
-        Account foundAccount = null;
-        for (User user : users) {
-            for (Account account : user.getAccounts()) {
-                if (account.getIban().equals(commandInput.getAccount())) {
-                    foundAccount = account;
-                    break;
-                }
-            }
-            if (foundAccount != null) {
-                break;
-            }
-        }
-
+        Account foundAccount = findAccount();
         if (foundAccount == null) {
-            ObjectNode errorNode = objectMapper.createObjectNode();
-            errorNode.put("description", "Account not found");
-            errorNode.put("timestamp", commandInput.getTimestamp());
-            commandNode.set("output", errorNode);
-            output.add(commandNode);
+            addErrorToOutput("Account not found");
             return;
         }
 
-        ObjectNode reportNode = objectMapper.createObjectNode();
-        reportNode.put("balance", foundAccount.getBalance());
-        reportNode.put("currency", foundAccount.getCurrency());
-        reportNode.put("IBAN", foundAccount.getIban());
+        ObjectNode reportNode = createReportNode(foundAccount);
 
+        ArrayList<Transaction> accountTransactions = filterTransactionsByTimestamp();
         ArrayNode transactionsArray = objectMapper.createArrayNode();
-
-        ArrayList<Transaction> accountTransactions = new ArrayList<>();
-        for (Transaction transaction : transactions) {
-            if (transaction.getTimestamp() >= commandInput.getStartTimestamp()
-                    && transaction.getTimestamp() <= commandInput.getEndTimestamp()) {
-                accountTransactions.add(transaction);
-            }
-        }
 
         for (Transaction transaction : accountTransactions) {
             if (transaction.getReportIban().equals(foundAccount.getIban())) {
-
                 ObjectNode transactionNode = objectMapper.createObjectNode();
-                transactionNode.put("timestamp", transaction.getTimestamp());
-                transactionNode.put("description", transaction.getDescription());
-
-                if (transaction.getSenderIBAN() != null) {
-                    transactionNode.put("senderIBAN", transaction.getSenderIBAN());
-                }
-
-                if (transaction.getReceiverIBAN() != null) {
-                    transactionNode.put("receiverIBAN", transaction.getReceiverIBAN());
-                }
-
-                if (transaction.getAmount() != 0 && transaction.getCurrency() != null) {
-                    transactionNode.put("amount", transaction.getAmount() + " " + transaction.getCurrency());
-                }
-
-                if (transaction.getTransferType() != null) {
-                    transactionNode.put("transferType", transaction.getTransferType());
-                }
-
-                if (transaction.getCardNumber() != null) {
-                    transactionNode.put("card", transaction.getCardNumber());
-                }
-
-                if (transaction.getCardHolder() != null) {
-                    transactionNode.put("cardHolder", transaction.getCardHolder());
-                }
-
-                if (transaction.getIban() != null) {
-                    transactionNode.put("account", transaction.getIban());
-                }
-
-                if (transaction.getCommerciant() != null) {
-                    transactionNode.put("commerciant", transaction.getCommerciant());
-                }
-
-                if (transaction.getAmountSpent() > 0) {
-                    transactionNode.put("amount", transaction.getAmountSpent());
-                }
-
-                if (transaction.getAccounts() != null) {
-                    transactionNode.remove("description");
-                    transactionNode.remove("amount");
-                    transactionNode.remove("currency");
-                    transactionNode.remove("accounts");
-
-                    String formattedAmount = String.format("%.2f", transaction.getAmount());
-
-                    transactionNode.put("amount", transaction.getAmountSpent());
-                    transactionNode.put("currency", transaction.getCurrency());
-                    transactionNode.put("description", "Split payment of " + formattedAmount + " " + transaction.getCurrency());
-
-                    if (transaction.getErrorAccount() != null) {
-                        transactionNode.put("error", transaction.getErrorAccount());
-                    }
-
-                    ArrayNode involvedAccounts = objectMapper.createArrayNode();
-                    for (String acc : transaction.getAccounts()) {
-                        involvedAccounts.add(acc);
-                    }
-                    transactionNode.set("involvedAccounts", involvedAccounts);
-                }
-
+                transaction.populateTransactionNode(transaction, transactionNode, objectMapper);
                 transactionsArray.add(transactionNode);
             }
         }
 
+
         reportNode.set("transactions", transactionsArray);
         commandNode.set("output", reportNode);
         output.add(commandNode);
+    }
+
+    private Account findAccount() {
+        for (User user : users) {
+            for (Account account : user.getAccounts()) {
+                if (account.getIban().equals(commandInput.getAccount())) {
+                    return account;
+                }
+            }
+        }
+        return null;
+    }
+
+    private void addErrorToOutput(final String errorMessage) {
+        ObjectNode errorNode = objectMapper.createObjectNode();
+        errorNode.put("description", errorMessage);
+        errorNode.put("timestamp", commandInput.getTimestamp());
+        commandNode.set("output", errorNode);
+        output.add(commandNode);
+    }
+
+    private ObjectNode createReportNode(final Account foundAccount) {
+        ObjectNode reportNode = objectMapper.createObjectNode();
+        reportNode.put("balance", foundAccount.getBalance());
+        reportNode.put("currency", foundAccount.getCurrency());
+        reportNode.put("IBAN", foundAccount.getIban());
+        return reportNode;
+    }
+
+    private ArrayList<Transaction> filterTransactionsByTimestamp() {
+        ArrayList<Transaction> filteredTransactions = new ArrayList<>();
+        for (Transaction transaction : transactions) {
+            if (transaction.getTimestamp() >= commandInput.getStartTimestamp()
+                    && transaction.getTimestamp() <= commandInput.getEndTimestamp()) {
+                filteredTransactions.add(transaction);
+            }
+        }
+        return filteredTransactions;
     }
 }

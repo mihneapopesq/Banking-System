@@ -4,11 +4,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.fileio.CommandInput;
-import org.poo.utilities.users.*;
 import org.poo.utils.Utils;
+import org.poo.utilities.users.Account;
+import org.poo.utilities.users.Card;
+import org.poo.utilities.users.CurrencyGraph;
+import org.poo.utilities.users.Transaction;
+import org.poo.utilities.users.User;
 
 import java.util.ArrayList;
 
+/**
+ * Command for processing online payments using a card.
+ * Validates card status and account balance before processing the payment.
+ */
 public class PayOnline extends CommandBase {
 
     private final ArrayList<User> users;
@@ -19,7 +27,12 @@ public class PayOnline extends CommandBase {
     private final ArrayNode output;
     private final ArrayList<Transaction> transactions;
 
-    public PayOnline(Builder builder) {
+    /**
+     * Constructs the PayOnline command using the provided builder.
+     *
+     * @param builder the builder containing the dependencies and configuration for this command.
+     */
+    public PayOnline(final Builder builder) {
         this.users = builder.getUsers();
         this.commandInput = builder.getCommandInput();
         this.currencyGraph = builder.getCurrencyGraph();
@@ -29,6 +42,10 @@ public class PayOnline extends CommandBase {
         this.transactions = builder.getTransactions();
     }
 
+    /**
+     * Executes the command to process an online payment.
+     * Handles frozen cards, insufficient funds, and one-time card handling.
+     */
     @Override
     public void execute() {
         String targetEmail = commandInput.getEmail();
@@ -50,7 +67,8 @@ public class PayOnline extends CommandBase {
                             double amountInAccountCurrency = currencyGraph.convertCurrency(
                                     paymentCurrency, account.getCurrency(), paymentAmount);
 
-                            if (account.getMinBalance() > account.getBalance() - amountInAccountCurrency) {
+                            if (account.getMinBalance() > account.getBalance()
+                                    - amountInAccountCurrency) {
                                 addTransaction("Insufficient funds", user, account);
                                 return;
                             }
@@ -67,7 +85,7 @@ public class PayOnline extends CommandBase {
                             ));
 
                             if (card.getIsOneTimeCard() == 1) {
-                                handleOneTimeCard(user, account, card);
+                                handleOneTimeCard(user, account);
                             }
                             return;
                         }
@@ -79,7 +97,7 @@ public class PayOnline extends CommandBase {
         addCardNotFoundError();
     }
 
-    private void addTransaction(String description, User user, Account account) {
+    private void addTransaction(final String description, final User user, final Account account) {
         transactions.add(new Transaction(
                 description,
                 commandInput.getTimestamp(),
@@ -88,7 +106,7 @@ public class PayOnline extends CommandBase {
         ));
     }
 
-    private void handleOneTimeCard(User user, Account account, Card card) {
+    private void handleOneTimeCard(final User user, final Account account) {
         CommandBase deleteCardCommand = new DeleteCard(
                 new Builder(users, commandInput, transactions)
         );
@@ -121,5 +139,4 @@ public class PayOnline extends CommandBase {
         commandNode.put("timestamp", commandInput.getTimestamp());
         output.add(commandNode);
     }
-
 }

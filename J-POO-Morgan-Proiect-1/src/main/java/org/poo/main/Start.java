@@ -6,8 +6,10 @@ import org.poo.fileio.ExchangeInput;
 import org.poo.fileio.ObjectInput;
 import org.poo.fileio.UserInput;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.poo.utilities.commands.*;
-import org.poo.utilities.users.*;
+import org.poo.utilities.commands.CommandFactory;
+import org.poo.utilities.users.CurrencyGraph;
+import org.poo.utilities.users.Transaction;
+import org.poo.utilities.users.User;
 
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -15,16 +17,24 @@ import java.util.ArrayList;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.poo.utils.Utils;
 
-
+/**
+ * The Start class is the entry point of the banking system.
+ */
 public class Start {
 
-    private ArrayList<User> users;
-    private ArrayList<CommandInput> commands;
-    private ArrayList<ExchangeInput> exchangeData;
-    private CurrencyGraph currencyGraph;
-    private ArrayList<Transaction> transactions;
+    private final ArrayList<User> users;
+    private final ArrayList<CommandInput> commands;
+    private final CurrencyGraph currencyGraph;
+    private final ArrayList<Transaction> transactions;
 
-    public Start(ObjectInput inputData) {
+    /**
+     * Constructor to initialize the Start class with input data.
+     * This will create users, initialize the currency graph, and store the commands.
+     *
+     * @param inputData The input data for initializing the system, including users,
+     *                  exchange rates, and commands.
+     */
+    public Start(final ObjectInput inputData) {
         users = new ArrayList<>();
 
         for (UserInput userInput : inputData.getUsers()) {
@@ -34,8 +44,7 @@ public class Start {
             users.add(user);
         }
 
-        exchangeData = new ArrayList<>();
-
+        ArrayList<ExchangeInput> exchangeData = new ArrayList<>();
         transactions = new ArrayList<>();
 
         for (ExchangeInput exchangeInput : inputData.getExchangeRates()) {
@@ -54,7 +63,7 @@ public class Start {
         commands = new ArrayList<>(Arrays.asList(inputData.getCommands()));
     }
 
-    public void run(ArrayNode output) {
+    public void run(final ArrayNode output) {
         ObjectMapper objectMapper = new ObjectMapper();
         Utils.resetRandom();
 
