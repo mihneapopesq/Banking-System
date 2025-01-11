@@ -23,6 +23,11 @@ public class Account {
     private String accountType;
     private String alias;
     private double interestRate;
+    private int numberOfTransactions;
+    private int gotFoodCashback;
+    private int gotClothesCashback;
+    private int gotTechCashback;
+    private String accountPlan;
 
     /**
      * Constructs an Account with the specified attributes.

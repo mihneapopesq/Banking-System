@@ -27,6 +27,16 @@ public class Transaction {
     private List<String> accounts;
     private String reportIban;
     private String errorAccount;
+    private String newPlanType;
+
+    public Transaction(final int timestamp, final String description, final String iban,
+                       final String newPlanType){
+        this.description = description;
+        this.timestamp = timestamp;
+        this.iban = iban;
+        this.newPlanType = newPlanType;
+    }
+
 
     public Transaction(final String description, final int timestamp, final String iban,
                        final String cardNumber, final String cardHolder, final String email,
@@ -190,6 +200,10 @@ public class Transaction {
 
         if (transaction.getAmountSpent() > 0) {
             transactionNode.put("amount", transaction.getAmountSpent());
+        }
+
+        if(transaction.getNewPlanType() != null){
+            transactionNode.put("newPlanType", transaction.getNewPlanType());
         }
 
         if (transaction.getAccounts() != null) {

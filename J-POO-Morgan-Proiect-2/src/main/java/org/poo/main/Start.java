@@ -7,9 +7,11 @@ import org.poo.fileio.ObjectInput;
 import org.poo.fileio.UserInput;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.utilities.commands.CommandFactory;
+import org.poo.utilities.users.Commerciant;
 import org.poo.utilities.users.CurrencyGraph;
 import org.poo.utilities.users.Transaction;
 import org.poo.utilities.users.User;
+import org.poo.fileio.CommerciantInput;
 
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -26,6 +28,7 @@ public class Start {
     private final ArrayList<CommandInput> commands;
     private final CurrencyGraph currencyGraph;
     private final ArrayList<Transaction> transactions;
+    private final ArrayList<Commerciant> commerciants;
 
     /**
      * Constructor to initialize the Start class with input data.
@@ -42,6 +45,17 @@ public class Start {
             user.setUser(userInput);
             user.setAccounts(new ArrayList<>());
             users.add(user);
+        }
+
+        commerciants = new ArrayList<>();
+        for (CommerciantInput commerciantInput : inputData.getCommerciants()) {
+            Commerciant commerciant = new Commerciant();
+            commerciant.getCommerciant().setCommerciant(commerciantInput.getCommerciant());
+            commerciant.getCommerciant().setId(commerciantInput.getId());
+            commerciant.getCommerciant().setType(commerciantInput.getType());
+            commerciant.getCommerciant().setCashbackStrategy(commerciantInput.getCashbackStrategy());
+            commerciant.getCommerciant().setAccount(commerciantInput.getAccount());
+            commerciants.add(commerciant);
         }
 
         ArrayList<ExchangeInput> exchangeData = new ArrayList<>();
@@ -78,7 +92,8 @@ public class Start {
                     command,
                     objectMapper,
                     currencyGraph,
-                    transactions
+                    transactions,
+                    commerciants
             );
 
             factory.execute();

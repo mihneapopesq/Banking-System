@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Getter;
 import lombok.Setter;
 import org.poo.fileio.CommandInput;
+import org.poo.utilities.users.Commerciant;
 import org.poo.utilities.users.CurrencyGraph;
 import org.poo.utilities.users.Transaction;
 import org.poo.utilities.users.User;
@@ -22,9 +23,19 @@ public class Builder {
     private ObjectNode commandNode;               // optional
     private int isOneTimeCard;                    // optional
     private ArrayNode output;                     // optional
+    private ArrayList<Commerciant> commerciants;   // optional
 
     public Builder(final ArrayList<User> users, final CommandInput commandInput) {
         this(users, commandInput, null, null, null, null, 0);
+    }
+
+    public Builder(final ArrayList<User> users, final CommandInput commandInput,
+                   final ArrayList<Transaction> transactions,
+                   final CurrencyGraph currencyGraph, final ObjectMapper objectMapper,
+                   final ObjectNode commandNode, final ArrayNode output, final ArrayList<Commerciant> commerciants) {
+        this(users, commandInput, transactions, currencyGraph, objectMapper, commandNode, 0);
+        this.output = output;
+        this.commerciants = commerciants;
     }
 
     public Builder(final ArrayList<User> users, final CommandInput commandInput,

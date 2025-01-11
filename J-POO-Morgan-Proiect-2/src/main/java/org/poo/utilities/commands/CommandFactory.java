@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.fileio.CommandInput;
+import org.poo.utilities.users.Commerciant;
 import org.poo.utilities.users.CurrencyGraph;
 import org.poo.utilities.users.Transaction;
 import org.poo.utilities.users.User;
@@ -23,6 +24,7 @@ public class CommandFactory extends CommandBase {
     private final ObjectMapper objectMapper;
     private final CurrencyGraph currencyGraph;
     private final ArrayList<Transaction> transactions;
+    private final ArrayList<Commerciant> commerciants;
 
     /**
      * Constructs the CommandFactory with the necessary dependencies.
@@ -40,7 +42,8 @@ public class CommandFactory extends CommandBase {
                           final ObjectNode commandNode, final ArrayNode output,
                           final CommandInput command, final ObjectMapper objectMapper,
                           final CurrencyGraph currencyGraph,
-                          final ArrayList<Transaction> transactions) {
+                          final ArrayList<Transaction> transactions,
+                          final ArrayList<Commerciant> commerciants) {
         this.commandType = commandType;
         this.users = users;
         this.commandNode = commandNode;
@@ -49,6 +52,7 @@ public class CommandFactory extends CommandBase {
         this.objectMapper = objectMapper;
         this.currencyGraph = currencyGraph;
         this.transactions = transactions;
+        this.commerciants = commerciants;
     }
 
     /**
@@ -102,7 +106,7 @@ public class CommandFactory extends CommandBase {
             case "payOnline":
                 new PayOnline(
                         new Builder(users, command, transactions, currencyGraph,
-                                objectMapper, commandNode, output)
+                                objectMapper, commandNode, output, commerciants)
                 ).execute();
                 break;
             case "sendMoney":
@@ -154,8 +158,18 @@ public class CommandFactory extends CommandBase {
                         new Builder(output, users, objectMapper, commandNode, command)
                 ).execute();
                 break;
+            case "withdrawSavings":
+                new WithdrawSavings(
+                        new Builder(users, command, transactions, currencyGraph)
+                ).execute();
+                break;
+            case "upgradePlan":
+                new UpgradePlan(
+                        new Builder(users, command, transactions, currencyGraph, objectMapper)
+                ).execute();
+                break;
             default:
-                throw new IllegalArgumentException("Unknown command type: " + commandType);
+//                throw new IllegalArgumentException("Unknown command type: " + commandType);
         }
     }
 }

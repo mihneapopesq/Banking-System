@@ -57,6 +57,9 @@ public class Report extends CommandBase {
         ArrayNode transactionsArray = objectMapper.createArrayNode();
 
         for (Transaction transaction : accountTransactions) {
+            if(transaction.getReportIban() == null) {
+                break;
+            }
             if (transaction.getReportIban().equals(foundAccount.getIban())) {
                 ObjectNode transactionNode = objectMapper.createObjectNode();
                 transaction.populateTransactionNode(transaction, transactionNode, objectMapper);
