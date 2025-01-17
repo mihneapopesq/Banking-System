@@ -85,11 +85,12 @@ public class PayOnline extends CommandBase {
                             if(commerciant.getCommerciant().getCashbackStrategy().equals("spendingThreshold")) {
                                 if(paymentCurrency.equals("RON") && (account.getAccountPlan().equals("standard") ||
                                         account.getAccountPlan().equals("student"))) {
-                                    if(paymentAmount > 100 && paymentAmount < 300) {
+                                    System.out.printf("primu if la tmstp %d\n", commandInput.getTimestamp());
+                                    if(paymentAmount >= 100 && paymentAmount < 300) {
                                         cashback = amountInAccountCurrency * 0.001;
-                                    } else if(paymentAmount > 300 && paymentAmount < 500) {
+                                    } else if(paymentAmount >= 300 && paymentAmount < 500) {
                                         cashback = amountInAccountCurrency * 0.002;
-                                    } else if(paymentAmount > 500) {
+                                    } else if(paymentAmount >= 500) {
                                         cashback = amountInAccountCurrency * 0.0025;
                                     }
                                 }
@@ -97,11 +98,12 @@ public class PayOnline extends CommandBase {
 
                             if(commerciant.getCommerciant().getCashbackStrategy().equals("spendingThreshold")) {
                                 if(paymentCurrency.equals("RON") && (account.getAccountPlan().equals("silver"))) {
-                                    if(paymentAmount > 100 && paymentAmount < 300) {
+                                    System.out.printf("al doilea if la tmstp %d\n", commandInput.getTimestamp());
+                                    if(paymentAmount >= 100 && paymentAmount < 300) {
                                         cashback = amountInAccountCurrency * 0.003;
-                                    } else if(paymentAmount > 300 && paymentAmount < 500) {
+                                    } else if(paymentAmount >= 300 && paymentAmount < 500) {
                                         cashback = amountInAccountCurrency * 0.004;
-                                    } else if(paymentAmount > 500) {
+                                    } else if(paymentAmount >= 500) {
                                         cashback = amountInAccountCurrency * 0.005;
                                     }
                                 }
@@ -109,11 +111,12 @@ public class PayOnline extends CommandBase {
 
                             if(commerciant.getCommerciant().getCashbackStrategy().equals("spendingThreshold")) {
                                 if(paymentCurrency.equals("RON") && (account.getAccountPlan().equals("gold"))) {
-                                    if(paymentAmount > 100 && paymentAmount < 300) {
+                                    System.out.printf("al treilea if la tmstp %d\n", commandInput.getTimestamp());
+                                    if(paymentAmount >= 100 && paymentAmount < 300) {
                                         cashback = amountInAccountCurrency * 0.005;
-                                    } else if(paymentAmount > 300 && paymentAmount < 500) {
+                                    } else if(paymentAmount >= 300 && paymentAmount < 500) {
                                         cashback = amountInAccountCurrency * 0.0055;
-                                    } else if(paymentAmount > 500) {
+                                    } else if(paymentAmount >= 500) {
                                         cashback = amountInAccountCurrency * 0.007;
                                     }
                                 }
@@ -128,6 +131,12 @@ public class PayOnline extends CommandBase {
                                     ).execute();
                                 }
                             }
+                            // todo implementeaza restul de cashback si aici
+                            if(account.getAccountPlan().equals("standard")) {
+                                double comision = amountInAccountCurrency * 0.002;
+                                account.setBalance(account.getBalance() - comision);
+                            }
+
                             account.setBalance(account.getBalance() - (amountInAccountCurrency - cashback));
 
                             transactions.add(new Transaction(

@@ -129,6 +129,14 @@ public class Transaction {
         this.email = email;
     }
 
+    public Transaction(final String description, final int timestamp, final String email,
+                       final double amount) {
+        this.description = description;
+        this.timestamp = timestamp;
+        this.email = email;
+        this.amountSpent = amount;
+    }
+
     public Transaction(final String description, final int timestamp, final double amountSpent,
                        final String commerciant, final String email, final String reportIban) {
         this.description = description;

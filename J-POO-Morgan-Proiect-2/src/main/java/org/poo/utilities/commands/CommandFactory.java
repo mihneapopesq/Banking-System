@@ -111,7 +111,7 @@ public class CommandFactory extends CommandBase {
                 break;
             case "sendMoney":
                 new SendMoney(
-                        new Builder(users, command, transactions, currencyGraph)
+                        new Builder(users, command, transactions, currencyGraph, objectMapper, commandNode, output)
                 ).execute();
                 break;
             case "setAlias":
@@ -166,6 +166,12 @@ public class CommandFactory extends CommandBase {
             case "upgradePlan":
                 new UpgradePlan(
                         new Builder(users, command, transactions, currencyGraph, objectMapper)
+                ).execute();
+                break;
+            case "cashWithdrawal":
+                new CashWithdrawal(
+                        new Builder(users, command, transactions, currencyGraph,
+                                objectMapper, commandNode, output)
                 ).execute();
                 break;
             default:

@@ -1,5 +1,8 @@
 package org.poo.utilities.commands;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.fileio.CommandInput;
 import org.poo.utilities.users.Account;
 import org.poo.utilities.users.CurrencyGraph;
@@ -16,6 +19,9 @@ public class SendMoney extends CommandBase {
     private final CommandInput commandInput;
     private final ArrayList<Transaction> transactions;
     private final CurrencyGraph currencyGraph;
+    private final ObjectNode commandNode;
+    private final ObjectMapper objectMapper;
+    private final ArrayNode output;
 
     /**
      * Constructs the SendMoney command using the provided builder.
@@ -27,6 +33,10 @@ public class SendMoney extends CommandBase {
         this.commandInput = builder.getCommandInput();
         this.transactions = builder.getTransactions();
         this.currencyGraph = builder.getCurrencyGraph();
+        this.commandNode = builder.getCommandNode();
+        this.objectMapper = builder.getObjectMapper();
+        this.output = builder.getOutput();
+
     }
 
     /**
@@ -64,6 +74,16 @@ public class SendMoney extends CommandBase {
         double amount = commandInput.getAmount();
 
         if (receiverAccount == null || senderAccount == null) {
+
+            ObjectNode errorNode = objectMapper.createObjectNode();
+            errorNode.put("timestamp", commandInput.getTimestamp());
+            errorNode.put("description", "User not found");
+            commandNode.set("output", errorNode);
+            commandNode.put("command", "sendMoney");
+            commandNode.put("timestamp", commandInput.getTimestamp());
+            output.add(commandNode);
+
+
             return;
         }
 
@@ -95,12 +115,18 @@ public class SendMoney extends CommandBase {
         senderAccount.setBalance(senderAccount.getBalance() - amount);
         receiverAccount.setBalance(receiverAccount.getBalance() + rightAmount);
 
+
+        if(senderAccount.getAccountPlan().equals("standard")) {
+            double comision = amount * 0.002;
+            senderAccount.setBalance(senderAccount.getBalance() - comision);
+        }
+
         double amountInRON = currencyGraph.convertCurrency(senderAccount.getCurrency(), "RON", amount);
         if(amountInRON >= 500 && senderAccount.getAccountPlan().equals("silver")) {
-            double comision = amountInRON * 0.001;
-            double sum = currencyGraph.convertCurrency("RON",
-                    senderAccount.getCurrency(), comision);
-            senderAccount.setBalance(senderAccount.getBalance() - sum);
+            double comision = amount * 0.001;
+//            double sum = currencyGraph.convertCurrency("RON",
+//                    senderAccount.getCurrency(), comision);
+            senderAccount.setBalance(senderAccount.getBalance() - comision);
         }
 
         Transaction senderTransaction = new Transaction(
