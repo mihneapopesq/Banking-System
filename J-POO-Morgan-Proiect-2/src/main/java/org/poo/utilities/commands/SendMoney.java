@@ -95,6 +95,14 @@ public class SendMoney extends CommandBase {
         senderAccount.setBalance(senderAccount.getBalance() - amount);
         receiverAccount.setBalance(receiverAccount.getBalance() + rightAmount);
 
+        double amountInRON = currencyGraph.convertCurrency(senderAccount.getCurrency(), "RON", amount);
+        if(amountInRON >= 500 && senderAccount.getAccountPlan().equals("silver")) {
+            double comision = amountInRON * 0.001;
+            double sum = currencyGraph.convertCurrency("RON",
+                    senderAccount.getCurrency(), comision);
+            senderAccount.setBalance(senderAccount.getBalance() - sum);
+        }
+
         Transaction senderTransaction = new Transaction(
                 amount,
                 senderAccount.getCurrency(),

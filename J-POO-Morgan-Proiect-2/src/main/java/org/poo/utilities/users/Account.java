@@ -28,6 +28,7 @@ public class Account {
     private int gotClothesCashback;
     private int gotTechCashback;
     private String accountPlan;
+    private int PaymentsOver300;
 
     /**
      * Constructs an Account with the specified attributes.
@@ -48,6 +49,7 @@ public class Account {
         this.balance = balance;
         this.minBalance = minBalance;
         this.cards = new ArrayList<>();
+        this.PaymentsOver300 = 0;
     }
 
     /**

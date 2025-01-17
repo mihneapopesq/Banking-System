@@ -81,7 +81,6 @@ public class PayOnline extends CommandBase {
                                 return;
                             }
                             double cashback = 0;
-                            // todo pune logica si pentru mai mult de 300 si 500
 
                             if(commerciant.getCommerciant().getCashbackStrategy().equals("spendingThreshold")) {
                                 if(paymentCurrency.equals("RON") && (account.getAccountPlan().equals("standard") ||
@@ -120,7 +119,15 @@ public class PayOnline extends CommandBase {
                                 }
                             }
 
-
+                            if(currencyGraph.convertCurrency(account.getCurrency(), "RON", amountInAccountCurrency) >= 300
+                               && account.getAccountPlan().equals("silver")) {
+                                account.setPaymentsOver300(account.getPaymentsOver300() + 1);
+                                if(account.getPaymentsOver300() >= 5) {
+                                    new UpgradePlan(
+                                            new Builder(users, commandInput, transactions, currencyGraph, objectMapper)
+                                    ).execute();
+                                }
+                            }
                             account.setBalance(account.getBalance() - (amountInAccountCurrency - cashback));
 
                             transactions.add(new Transaction(

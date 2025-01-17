@@ -28,13 +28,15 @@ public class Transaction {
     private String reportIban;
     private String errorAccount;
     private String newPlanType;
+    private String upgradePlanIban;
 
-    public Transaction(final int timestamp, final String description, final String iban,
-                       final String newPlanType){
+    public Transaction(final String description, final int timestamp, final String email,
+                       final String newPlanType, final String iban){
         this.description = description;
         this.timestamp = timestamp;
-        this.iban = iban;
+        this.email = email;
         this.newPlanType = newPlanType;
+        this.upgradePlanIban = iban;
     }
 
 
@@ -171,6 +173,10 @@ public class Transaction {
 
         if (transaction.getReceiverIBAN() != null) {
             transactionNode.put("receiverIBAN", transaction.getReceiverIBAN());
+        }
+
+        if(transaction.getUpgradePlanIban() != null) {
+            transactionNode.put("accountIBAN", transaction.getUpgradePlanIban());
         }
 
         if (transaction.getAmount() != 0 && transaction.getCurrency() != null) {
