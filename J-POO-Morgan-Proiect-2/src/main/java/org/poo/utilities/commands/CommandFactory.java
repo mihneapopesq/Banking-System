@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.fileio.CommandInput;
-import org.poo.utilities.users.Commerciant;
-import org.poo.utilities.users.CurrencyGraph;
-import org.poo.utilities.users.Transaction;
-import org.poo.utilities.users.User;
+import org.poo.utilities.users.*;
 
 import java.util.ArrayList;
 
@@ -25,6 +22,7 @@ public class CommandFactory extends CommandBase {
     private final CurrencyGraph currencyGraph;
     private final ArrayList<Transaction> transactions;
     private final ArrayList<Commerciant> commerciants;
+    private final ArrayList<PendingSplitPayment> pendingSplitPayments;
 
     /**
      * Constructs the CommandFactory with the necessary dependencies.
@@ -43,7 +41,8 @@ public class CommandFactory extends CommandBase {
                           final CommandInput command, final ObjectMapper objectMapper,
                           final CurrencyGraph currencyGraph,
                           final ArrayList<Transaction> transactions,
-                          final ArrayList<Commerciant> commerciants) {
+                          final ArrayList<Commerciant> commerciants,
+                          final ArrayList<PendingSplitPayment> pendingSplitPayments) {
         this.commandType = commandType;
         this.users = users;
         this.commandNode = commandNode;
@@ -53,6 +52,7 @@ public class CommandFactory extends CommandBase {
         this.currencyGraph = currencyGraph;
         this.transactions = transactions;
         this.commerciants = commerciants;
+        this.pendingSplitPayments = pendingSplitPayments;
     }
 
     /**
@@ -138,7 +138,7 @@ public class CommandFactory extends CommandBase {
                 break;
             case "splitPayment":
                 new SplitPayment(
-                        new Builder(users, command, transactions, currencyGraph)
+                        new Builder(users, command, transactions, currencyGraph, pendingSplitPayments)
                 ).execute();
                 break;
             case "report":
@@ -172,6 +172,11 @@ public class CommandFactory extends CommandBase {
                 new CashWithdrawal(
                         new Builder(users, command, transactions, currencyGraph,
                                 objectMapper, commandNode, output)
+                ).execute();
+                break;
+            case "acceptSplitPayment":
+                new SplitPayment(
+                        new Builder(users, command, transactions, currencyGraph, pendingSplitPayments)
                 ).execute();
                 break;
             default:

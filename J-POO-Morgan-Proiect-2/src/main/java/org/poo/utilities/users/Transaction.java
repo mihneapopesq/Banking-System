@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -30,6 +31,35 @@ public class Transaction {
     private String newPlanType;
     private String upgradePlanIban;
     private String interestCurrency;
+    private List<Double> amountForUsers;
+    private String splitPaymentType;
+
+
+    /*
+    *                     Transaction transaction = new Transaction(
+                            amounts, // Single user's amount
+                            currency,
+                            "Split payment of " + String.format("%.2f", pendingPayment.getTotalAmount()) + " " + currency,
+                            accounts, // Single user's account
+                            "custom", // Split payment type
+                            pendingPayment.getTimestamp(),
+                            user.getUser().getEmail() // Include the user's email
+                    );*/
+
+
+    public Transaction(final List<Double> amountForUsers,
+                       final String currency, final double totalAmount,
+                       final List<String> involvedAccounts,
+                       final String splitPaymentType, final int timestamp,
+                       final String email) {
+        this.amountForUsers = amountForUsers;
+        this.currency = currency;
+        this.amount = totalAmount;
+        this.timestamp = timestamp;
+        this.splitPaymentType = splitPaymentType;
+        this.accounts = involvedAccounts;
+        this.email = email;
+    }
 
     public Transaction(final double amount, final String currency, final String description,
                        final int timestamp, final String email){
@@ -226,6 +256,10 @@ public class Transaction {
             transactionNode.put("amount", transaction.getAmountSpent());
         }
 
+        if (transaction.getSplitPaymentType() != null) {
+            transactionNode.put("splitPaymentType", transaction.getSplitPaymentType());
+        }
+
         if(transaction.getInterestCurrency() != null) {
             transactionNode.put("currency", transaction.getInterestCurrency());
         }
@@ -242,7 +276,9 @@ public class Transaction {
 
             String formattedAmount = String.format("%.2f", transaction.getAmount());
 
-            transactionNode.put("amount", transaction.getAmountSpent());
+            if(amountForUsers == null)
+                transactionNode.put("amount", transaction.getAmountSpent());
+
             transactionNode.put("currency", transaction.getCurrency());
             transactionNode.put("description", "Split payment of " + formattedAmount + " "
                     + transaction.getCurrency());
@@ -256,6 +292,14 @@ public class Transaction {
                 involvedAccounts.add(acc);
             }
             transactionNode.set("involvedAccounts", involvedAccounts);
+
+            if (transaction.getAmountForUsers() != null) {
+                ArrayNode amountForUsersNode = objectMapper.createArrayNode();
+                for (Double userAmount : transaction.getAmountForUsers()) {
+                    amountForUsersNode.add(userAmount);
+                }
+                transactionNode.set("amountForUsers", amountForUsersNode);
+            }
         }
     }
 }

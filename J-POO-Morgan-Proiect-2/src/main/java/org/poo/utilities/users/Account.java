@@ -33,10 +33,6 @@ public class Account {
     private int FoodPayments;
     private int ClothesPayments;
     private int TechPayments;
-//    private int numberOfTransactions;
-//    private int cashbackFood;
-//    private int cashbackClothes;
-//    private int cashbackTech;
 
     /**
      * Constructs an Account with the specified attributes.

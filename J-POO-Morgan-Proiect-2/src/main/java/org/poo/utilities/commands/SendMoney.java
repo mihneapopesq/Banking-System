@@ -98,7 +98,13 @@ public class SendMoney extends CommandBase {
             return;
         }
 
-        if (senderAccount.getMinBalance() > senderAccount.getBalance() - amount) {
+        System.out.printf("la tmstp %d, minbalance %f, balance %f, amount %f\n",
+                commandInput.getTimestamp(), senderAccount.getMinBalance(),
+                senderAccount.getBalance(), amount);
+
+
+
+        if (senderAccount.getMinBalance() >= senderAccount.getBalance() - amount) {
             Transaction transaction = new Transaction(
                     "Insufficient funds",
                     commandInput.getTimestamp(),

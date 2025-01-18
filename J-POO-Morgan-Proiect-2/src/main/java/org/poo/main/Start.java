@@ -7,11 +7,9 @@ import org.poo.fileio.ObjectInput;
 import org.poo.fileio.UserInput;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.utilities.commands.CommandFactory;
-import org.poo.utilities.users.Commerciant;
-import org.poo.utilities.users.CurrencyGraph;
-import org.poo.utilities.users.Transaction;
-import org.poo.utilities.users.User;
+import org.poo.utilities.users.*;
 import org.poo.fileio.CommerciantInput;
+import org.poo.utilities.users.PendingSplitPayment;
 
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -29,6 +27,7 @@ public class Start {
     private final CurrencyGraph currencyGraph;
     private final ArrayList<Transaction> transactions;
     private final ArrayList<Commerciant> commerciants;
+    private final ArrayList<PendingSplitPayment> pendingSplitPayments;
 
     /**
      * Constructor to initialize the Start class with input data.
@@ -79,7 +78,7 @@ public class Start {
         }
         currencyGraph = new CurrencyGraph();
         currencyGraph.buildCurrencyGraph(exchangeData);
-
+        pendingSplitPayments = new ArrayList<>();
         commands = new ArrayList<>(Arrays.asList(inputData.getCommands()));
     }
 
@@ -99,7 +98,8 @@ public class Start {
                     objectMapper,
                     currencyGraph,
                     transactions,
-                    commerciants
+                    commerciants,
+                    pendingSplitPayments
             );
 
             factory.execute();
