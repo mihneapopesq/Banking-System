@@ -15,6 +15,8 @@ public class User {
     private UserInput user;
     private ArrayList<Transaction> transactions;
     private ArrayList<Account> accounts;
+    private String userPlan;
+    private int paymentsOver300;
 
     public User() {
         this.accounts = new ArrayList<>();

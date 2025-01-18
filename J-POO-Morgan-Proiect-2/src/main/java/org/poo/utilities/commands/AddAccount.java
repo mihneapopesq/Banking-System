@@ -51,14 +51,13 @@ public class AddAccount extends CommandBase {
                 newAccount.setGotTechCashback(0);
                 newAccount.setGotFoodCashback(0);
                 newAccount.setNumberOfTransactions(0);
+                newAccount.setGotCashbacks(0);
+                newAccount.setFoodPayments(0);
+                newAccount.setTechPayments(0);
+                newAccount.setClothesPayments(0);
 
 
-                if(user.getUser().getOccupation().equals("student")) {
-                    newAccount.setAccountPlan("student");
-                } else {
-                    newAccount.setAccountPlan("standard");
-                }
-
+                newAccount.setAccountPlan(user.getUserPlan());
 
                 Transaction transaction = new Transaction(
                         "New account created",

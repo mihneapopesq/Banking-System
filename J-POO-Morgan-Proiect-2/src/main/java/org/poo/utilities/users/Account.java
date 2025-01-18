@@ -27,8 +27,12 @@ public class Account {
     private int gotFoodCashback;
     private int gotClothesCashback;
     private int gotTechCashback;
+    private int gotCashbacks;
     private String accountPlan;
     private int PaymentsOver300;
+    private int FoodPayments;
+    private int ClothesPayments;
+    private int TechPayments;
 //    private int numberOfTransactions;
 //    private int cashbackFood;
 //    private int cashbackClothes;

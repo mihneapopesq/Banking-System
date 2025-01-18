@@ -86,8 +86,8 @@ public class PayOnline extends CommandBase {
                             double cashback = 0;
 
                             if(commerciant.getCommerciant().getCashbackStrategy().equals("spendingThreshold")) {
-                                if(paymentCurrency.equals("RON") && (account.getAccountPlan().equals("standard") ||
-                                        account.getAccountPlan().equals("student"))) {
+                                if(paymentCurrency.equals("RON") && (user.getUserPlan().equals("standard") ||
+                                        user.getUserPlan().equals("student"))) {
 //                                    System.out.printf("primu if la tmstp %d\n", commandInput.getTimestamp());
                                     if(paymentAmount >= 100 && paymentAmount < 300) {
                                         cashback = amountInAccountCurrency * 0.001;
@@ -100,7 +100,7 @@ public class PayOnline extends CommandBase {
                             }
 
                             if(commerciant.getCommerciant().getCashbackStrategy().equals("spendingThreshold")) {
-                                if(paymentCurrency.equals("RON") && (account.getAccountPlan().equals("silver"))) {
+                                if(paymentCurrency.equals("RON") && (user.getUserPlan().equals("silver"))) {
 //                                    System.out.printf("al doilea if la tmstp %d\n", commandInput.getTimestamp());
                                     if(paymentAmount >= 100 && paymentAmount < 300) {
                                         cashback = amountInAccountCurrency * 0.003;
@@ -113,7 +113,7 @@ public class PayOnline extends CommandBase {
                             }
 
                             if(commerciant.getCommerciant().getCashbackStrategy().equals("spendingThreshold")) {
-                                if(paymentCurrency.equals("RON") && (account.getAccountPlan().equals("gold"))) {
+                                if(paymentCurrency.equals("RON") && (user.getUserPlan().equals("gold"))) {
 //                                    System.out.printf("al treilea if la tmstp %d\n", commandInput.getTimestamp());
                                     if(paymentAmount >= 100 && paymentAmount < 300) {
                                         cashback = amountInAccountCurrency * 0.005;
@@ -125,39 +125,46 @@ public class PayOnline extends CommandBase {
                                 }
                             }
 
+                            if(commerciant.getCommerciant().getType().equals("Food")) {
+                                account.setFoodPayments(account.getFoodPayments() + 1);
+                            } else if(commerciant.getCommerciant().getType().equals("Clothes")) {
+                                account.setClothesPayments(account.getClothesPayments() + 1);
+                            } else if(commerciant.getCommerciant().getType().equals("Tech")) {
+                                account.setTechPayments(account.getTechPayments() + 1);
+                            }
+
                             account.setNumberOfTransactions(account.getNumberOfTransactions() + 1);
+
+
+                            // todo implementeaza incat sa numere pentru fiecare tip de comerciant
 
                             if(commerciant.getCommerciant().getCashbackStrategy().equals("nrOfTransactions")) {
 
-                                System.out.printf("intru vreodata in iful asta in payonline\n");
 
                                 if(commerciant.getCommerciant().getType().equals("Food")) {
-                                    System.out.printf("food po\n");
-                                    if(account.getNumberOfTransactions() > 2 && account.getGotFoodCashback() == 0) {
-                                        System.out.printf("bag cashbacku la food\n");
+                                    if(account.getFoodPayments() > 2 && account.getGotFoodCashback() == 0) {
                                         cashback = amountInAccountCurrency * 0.02;
                                         account.setGotFoodCashback(1);
+                                        account.setGotCashbacks(1);
                                     }
                                 } else if(commerciant.getCommerciant().getType().equals("Clothes")) {
-                                    System.out.printf("clothes po\n");
-                                    if(account.getNumberOfTransactions() > 5 && account.getGotClothesCashback() == 0) {
-                                        System.out.printf("bag cashbacku la clothes\n");
+                                    if(account.getClothesPayments() > 5 && account.getGotClothesCashback() == 0) {
                                         cashback = amountInAccountCurrency * 0.05;
                                         account.setGotClothesCashback(1);
+                                        account.setGotCashbacks(1);
                                     }
                                 } else if(commerciant.getCommerciant().getType().equals("Tech")) {
-                                    System.out.printf("tech po\n");
-                                    if(account.getNumberOfTransactions() > 10 && account.getGotTechCashback() == 0) {
-                                        System.out.printf("bag cashbacku la tech\n");
+                                    if(account.getTechPayments() > 10 && account.getGotTechCashback() == 0) {
                                         cashback = amountInAccountCurrency * 0.1;
                                         account.setGotTechCashback(1);
+                                        account.setGotCashbacks(1);
                                     }
                                 }
                             }
 
 
                             if(currencyGraph.convertCurrency(account.getCurrency(), "RON", amountInAccountCurrency) >= 300
-                               && account.getAccountPlan().equals("silver")) {
+                               && user.getUserPlan().equals("silver")) {
                                 account.setPaymentsOver300(account.getPaymentsOver300() + 1);
                                 if(account.getPaymentsOver300() >= 5) {
                                     new UpgradePlan(
@@ -166,13 +173,13 @@ public class PayOnline extends CommandBase {
                                 }
                             }
                             // todo implementeaza restul de cashback si aici
-                            if(account.getAccountPlan().equals("standard")) {
+                            if(user.getUserPlan().equals("standard")) {
                                 double comision = amountInAccountCurrency * 0.002;
                                 account.setBalance(account.getBalance() - comision);
                             }
 
                             double ronAmount = currencyGraph.convertCurrency(account.getCurrency(), "RON", amountInAccountCurrency);
-                            if(account.getAccountPlan().equals("silver") && ronAmount >= 500) {
+                            if(user.getUserPlan().equals("silver") && ronAmount >= 500) {
                                 double comision = amountInAccountCurrency * 0.001;
                                 account.setBalance(account.getBalance() - comision);
                             }

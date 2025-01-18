@@ -44,6 +44,12 @@ public class Start {
             User user = new User();
             user.setUser(userInput);
             user.setAccounts(new ArrayList<>());
+            if(user.getUser().getOccupation().equals("student")) {
+                user.setUserPlan("student");
+            } else {
+                user.setUserPlan("standard");
+            }
+            user.setPaymentsOver300(0);
             users.add(user);
         }
 

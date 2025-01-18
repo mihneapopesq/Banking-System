@@ -36,8 +36,8 @@ public class UpgradePlan extends CommandBase{
             for(Account account : user.getAccounts()) {
                 if(account.getIban().equals(commandInput.getAccount())) {
                     if(commandInput.getNewPlanType().equals("silver")
-                        && (account.getAccountPlan().equals("standard")
-                            || account.getAccountPlan().equals("student"))) {
+                        && (user.getUserPlan().equals("standard")
+                            || user.getUserPlan().equals("student"))) {
                         double amountInAccountCurrency = currencyGraph.convertCurrency(
                                 "RON",
                                 account.getCurrency(),
@@ -56,8 +56,9 @@ public class UpgradePlan extends CommandBase{
                             transactions.add(transaction);
                         }
                         account.setAccountPlan(commandInput.getNewPlanType());
+                        user.setUserPlan(commandInput.getNewPlanType());
                     } else if(commandInput.getNewPlanType().equals("gold")
-                            && account.getAccountPlan().equals("silver")) {
+                            && user.getUserPlan().equals("silver")) {
 
                         if(account.getPaymentsOver300() >= 5) {
                             Transaction transaction = new Transaction(
@@ -69,6 +70,7 @@ public class UpgradePlan extends CommandBase{
                             );
                             transactions.add(transaction);
                             account.setAccountPlan(commandInput.getNewPlanType());
+                            user.setUserPlan(commandInput.getNewPlanType());
                             return ;
                         }
 
@@ -90,9 +92,10 @@ public class UpgradePlan extends CommandBase{
                             transactions.add(transaction);
                         }
                         account.setAccountPlan(commandInput.getNewPlanType());
+                        user.setUserPlan(commandInput.getNewPlanType());
                     } else if(commandInput.getNewPlanType().equals("gold")
-                            && (account.getAccountPlan().equals("standard")
-                            || account.getAccountPlan().equals("student"))){
+                            && (user.getUserPlan().equals("standard")
+                            || user.getUserPlan().equals("student"))){
                         double amountInAccountCurrency = currencyGraph.convertCurrency(
                                 "RON",
                                 account.getCurrency(),
@@ -111,6 +114,7 @@ public class UpgradePlan extends CommandBase{
                             transactions.add(transaction);
                         }
                         account.setAccountPlan(commandInput.getNewPlanType());
+                        user.setUserPlan(commandInput.getNewPlanType());
                     }
                 }
             }

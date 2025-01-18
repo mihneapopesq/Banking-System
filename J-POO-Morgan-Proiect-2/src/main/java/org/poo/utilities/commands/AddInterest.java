@@ -51,10 +51,6 @@ public class AddInterest extends CommandBase {
                         return;
                     }
 
-                    System.out.printf("interst rate: %f\n", account.getInterestRate());
-                    System.out.printf("balance: %f\n", account.getBalance());
-
-
                     Transaction transaction = new Transaction(
                             account.getBalance() * account.getInterestRate(),
                             account.getCurrency(),
