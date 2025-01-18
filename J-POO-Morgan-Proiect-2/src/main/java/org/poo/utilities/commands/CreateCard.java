@@ -49,10 +49,10 @@ public class CreateCard extends CommandBase {
                         newCard.setStatus("active");
                         newCard.setIsOneTimeCard(isOneTimeCard);
                         newCard.setIsFrozen(0);
-                        newCard.setCashbackTech(1);
-                        newCard.setCashbackFood(1);
-                        newCard.setCashbackClothes(1);
-                        newCard.setNumberOfTransactions(0);
+//                        newCard.setCashbackTech(1);
+//                        newCard.setCashbackFood(1);
+//                        newCard.setCashbackClothes(1);
+//                        newCard.setNumberOfTransactions(0);
 
                         Transaction transaction = new Transaction(
                                 "New card created",

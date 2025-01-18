@@ -36,8 +36,13 @@ public class WithdrawSavings extends CommandBase{
         for(User user : users) {
             for(Account account : user.getAccounts()) {
                 // daca contul e de tip savings si ibanu e ok
+
+
+                // todo verifica daca exista un cont classic in care sa adaugi banii
+
                 if(account.getIban().equals(commandInput.getAccount())
-                        && account.getAccountType().equals("savings")) {
+                        && account.getAccountType().equals("savings")
+                        && getClassicAccount(user.getAccounts()) == 1) {
                     // daca are >= 21 de ani
                     if(user.checkOldEnough() == 1) {
                         double amount = commandInput.getAmount();
@@ -59,8 +64,28 @@ public class WithdrawSavings extends CommandBase{
                         );
                         transactions.add(transaction);
                     }
+                    return ;
+                } else if (account.getIban().equals(commandInput.getAccount())
+                        && account.getAccountType().equals("savings")
+                        && getClassicAccount(user.getAccounts()) == 0) {
+                    Transaction transaction = new Transaction(
+                            "You do not have a classic account.",
+                            commandInput.getTimestamp(),
+                            user.getUser().getEmail()
+                    );
+                    transactions.add(transaction);
                 }
             }
         }
     }
+
+    public int getClassicAccount(final ArrayList<Account> accounts) {
+        for (Account account : accounts) {
+            if (account.getAccountType().equals("classic")) {
+                return 1;
+            }
+        }
+        return 0;
+    }
+
 }

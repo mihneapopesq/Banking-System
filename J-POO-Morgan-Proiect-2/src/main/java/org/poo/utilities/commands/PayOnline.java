@@ -50,6 +50,9 @@ public class PayOnline extends CommandBase {
         String targetCardNumber = commandInput.getCardNumber();
         String paymentCurrency = commandInput.getCurrency();
         double paymentAmount = commandInput.getAmount();
+        if(paymentAmount == 0) {
+            return ;
+        }
 
         //search commerciant
         Commerciant commerciant = new Commerciant();
@@ -85,7 +88,7 @@ public class PayOnline extends CommandBase {
                             if(commerciant.getCommerciant().getCashbackStrategy().equals("spendingThreshold")) {
                                 if(paymentCurrency.equals("RON") && (account.getAccountPlan().equals("standard") ||
                                         account.getAccountPlan().equals("student"))) {
-                                    System.out.printf("primu if la tmstp %d\n", commandInput.getTimestamp());
+//                                    System.out.printf("primu if la tmstp %d\n", commandInput.getTimestamp());
                                     if(paymentAmount >= 100 && paymentAmount < 300) {
                                         cashback = amountInAccountCurrency * 0.001;
                                     } else if(paymentAmount >= 300 && paymentAmount < 500) {
@@ -98,7 +101,7 @@ public class PayOnline extends CommandBase {
 
                             if(commerciant.getCommerciant().getCashbackStrategy().equals("spendingThreshold")) {
                                 if(paymentCurrency.equals("RON") && (account.getAccountPlan().equals("silver"))) {
-                                    System.out.printf("al doilea if la tmstp %d\n", commandInput.getTimestamp());
+//                                    System.out.printf("al doilea if la tmstp %d\n", commandInput.getTimestamp());
                                     if(paymentAmount >= 100 && paymentAmount < 300) {
                                         cashback = amountInAccountCurrency * 0.003;
                                     } else if(paymentAmount >= 300 && paymentAmount < 500) {
@@ -111,7 +114,7 @@ public class PayOnline extends CommandBase {
 
                             if(commerciant.getCommerciant().getCashbackStrategy().equals("spendingThreshold")) {
                                 if(paymentCurrency.equals("RON") && (account.getAccountPlan().equals("gold"))) {
-                                    System.out.printf("al treilea if la tmstp %d\n", commandInput.getTimestamp());
+//                                    System.out.printf("al treilea if la tmstp %d\n", commandInput.getTimestamp());
                                     if(paymentAmount >= 100 && paymentAmount < 300) {
                                         cashback = amountInAccountCurrency * 0.005;
                                     } else if(paymentAmount >= 300 && paymentAmount < 500) {
@@ -121,6 +124,37 @@ public class PayOnline extends CommandBase {
                                     }
                                 }
                             }
+
+                            account.setNumberOfTransactions(account.getNumberOfTransactions() + 1);
+
+                            if(commerciant.getCommerciant().getCashbackStrategy().equals("nrOfTransactions")) {
+
+                                System.out.printf("intru vreodata in iful asta in payonline\n");
+
+                                if(commerciant.getCommerciant().getType().equals("Food")) {
+                                    System.out.printf("food po\n");
+                                    if(account.getNumberOfTransactions() > 2 && account.getGotFoodCashback() == 0) {
+                                        System.out.printf("bag cashbacku la food\n");
+                                        cashback = amountInAccountCurrency * 0.02;
+                                        account.setGotFoodCashback(1);
+                                    }
+                                } else if(commerciant.getCommerciant().getType().equals("Clothes")) {
+                                    System.out.printf("clothes po\n");
+                                    if(account.getNumberOfTransactions() > 5 && account.getGotClothesCashback() == 0) {
+                                        System.out.printf("bag cashbacku la clothes\n");
+                                        cashback = amountInAccountCurrency * 0.05;
+                                        account.setGotClothesCashback(1);
+                                    }
+                                } else if(commerciant.getCommerciant().getType().equals("Tech")) {
+                                    System.out.printf("tech po\n");
+                                    if(account.getNumberOfTransactions() > 10 && account.getGotTechCashback() == 0) {
+                                        System.out.printf("bag cashbacku la tech\n");
+                                        cashback = amountInAccountCurrency * 0.1;
+                                        account.setGotTechCashback(1);
+                                    }
+                                }
+                            }
+
 
                             if(currencyGraph.convertCurrency(account.getCurrency(), "RON", amountInAccountCurrency) >= 300
                                && account.getAccountPlan().equals("silver")) {
@@ -134,6 +168,12 @@ public class PayOnline extends CommandBase {
                             // todo implementeaza restul de cashback si aici
                             if(account.getAccountPlan().equals("standard")) {
                                 double comision = amountInAccountCurrency * 0.002;
+                                account.setBalance(account.getBalance() - comision);
+                            }
+
+                            double ronAmount = currencyGraph.convertCurrency(account.getCurrency(), "RON", amountInAccountCurrency);
+                            if(account.getAccountPlan().equals("silver") && ronAmount >= 500) {
+                                double comision = amountInAccountCurrency * 0.001;
                                 account.setBalance(account.getBalance() - comision);
                             }
 

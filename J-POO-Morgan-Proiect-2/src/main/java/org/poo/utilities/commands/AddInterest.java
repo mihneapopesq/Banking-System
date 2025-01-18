@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.fileio.CommandInput;
 import org.poo.utilities.users.Account;
+import org.poo.utilities.users.Transaction;
 import org.poo.utilities.users.User;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ public class AddInterest extends CommandBase {
     private final ObjectMapper objectMapper;
     private final ObjectNode commandNode;
     private final CommandInput commandInput;
+    private final ArrayList<Transaction> transactions;
 
     /**
      * Constructs the AddInterest command using the provided builder.
@@ -31,6 +33,7 @@ public class AddInterest extends CommandBase {
         this.objectMapper = builder.getObjectMapper();
         this.commandNode = builder.getCommandNode();
         this.commandInput = builder.getCommandInput();
+        this.transactions = builder.getTransactions();
     }
 
     /**
@@ -47,6 +50,19 @@ public class AddInterest extends CommandBase {
                                 commandInput, "This is not a savings account");
                         return;
                     }
+
+                    System.out.printf("interst rate: %f\n", account.getInterestRate());
+                    System.out.printf("balance: %f\n", account.getBalance());
+
+
+                    Transaction transaction = new Transaction(
+                            account.getBalance() * account.getInterestRate(),
+                            account.getCurrency(),
+                            "Interest rate income",
+                            commandInput.getTimestamp(),
+                            user.getUser().getEmail()
+                    );
+                    transactions.add(transaction);
                     account.setBalance(account.getBalance()
                             + account.getBalance() * account.getInterestRate());
                 }

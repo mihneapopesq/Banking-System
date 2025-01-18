@@ -29,6 +29,10 @@ public class Account {
     private int gotTechCashback;
     private String accountPlan;
     private int PaymentsOver300;
+//    private int numberOfTransactions;
+//    private int cashbackFood;
+//    private int cashbackClothes;
+//    private int cashbackTech;
 
     /**
      * Constructs an Account with the specified attributes.

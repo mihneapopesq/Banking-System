@@ -155,7 +155,7 @@ public class CommandFactory extends CommandBase {
                 break;
             case "addInterest":
                 new AddInterest(
-                        new Builder(output, users, objectMapper, commandNode, command)
+                        new Builder(output, users, objectMapper, commandNode, command, transactions)
                 ).execute();
                 break;
             case "withdrawSavings":

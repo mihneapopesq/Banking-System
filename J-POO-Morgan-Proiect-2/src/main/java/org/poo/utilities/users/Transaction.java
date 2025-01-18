@@ -29,6 +29,16 @@ public class Transaction {
     private String errorAccount;
     private String newPlanType;
     private String upgradePlanIban;
+    private String interestCurrency;
+
+    public Transaction(final double amount, final String currency, final String description,
+                       final int timestamp, final String email){
+        this.amountSpent = amount;
+        this.interestCurrency = currency;
+        this.description = description;
+        this.timestamp = timestamp;
+        this.email = email;
+    }
 
     public Transaction(final String description, final int timestamp, final String email,
                        final String newPlanType, final String iban){
@@ -214,6 +224,10 @@ public class Transaction {
 
         if (transaction.getAmountSpent() > 0) {
             transactionNode.put("amount", transaction.getAmountSpent());
+        }
+
+        if(transaction.getInterestCurrency() != null) {
+            transactionNode.put("currency", transaction.getInterestCurrency());
         }
 
         if(transaction.getNewPlanType() != null){

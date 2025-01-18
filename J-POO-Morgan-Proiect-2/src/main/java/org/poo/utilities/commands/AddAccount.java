@@ -50,6 +50,9 @@ public class AddAccount extends CommandBase {
                 newAccount.setGotClothesCashback(0);
                 newAccount.setGotTechCashback(0);
                 newAccount.setGotFoodCashback(0);
+                newAccount.setNumberOfTransactions(0);
+
+
                 if(user.getUser().getOccupation().equals("student")) {
                     newAccount.setAccountPlan("student");
                 } else {

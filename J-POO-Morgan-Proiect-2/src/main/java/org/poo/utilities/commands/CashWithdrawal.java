@@ -46,14 +46,51 @@ public class CashWithdrawal extends CommandBase{
                           return;
                       }
 
+                      double cashback = 0;
+
+                      if(account.getAccountType().equals("standard") ||
+                        account.getAccountType().equals("student")) {
+                          if(amount >= 100 && amount < 300) {
+                              cashback = amount * 0.001;
+                          } else if(amount >= 300 && amount < 500) {
+                              cashback = amount * 0.002;
+                          } else if(amount >= 500) {
+                              cashback = amount * 0.0025;
+                          }
+                      } else if(account.getAccountType().equals("silver")){
+                          if(amount >= 100 && amount < 300) {
+                              cashback = amount * 0.003;
+                          } else if(amount >= 300 && amount < 500) {
+                              cashback = amount * 0.004;
+                          } else if(amount >= 500) {
+                              cashback = amount * 0.005;
+                          }
+                      } else if(account.getAccountType().equals("gold")){
+                          if(amount >= 100 && amount < 300) {
+                              cashback = amount * 0.005;
+                          } else if(amount >= 300 && amount < 500) {
+                              cashback = amount * 0.0055;
+                          } else if(amount >= 500) {
+                              cashback = amount * 0.007;
+                          }
+                      }
+
+                      cashback = currencyGraph.convertCurrency("RON", account.getCurrency(), cashback);
+
                       if(account.getAccountPlan().equals("standard")) {
                           double comision = amount * 0.002;
+                          comision = currencyGraph.convertCurrency("RON", account.getCurrency(), comision);
                           account.setBalance(account.getBalance() - comision);
+                      }
+                      if(account.getAccountPlan().equals("silver") && amount >= 500) {
+                            double comision = amount * 0.001;
+                            comision = currencyGraph.convertCurrency("RON", account.getCurrency(), comision);
+                            account.setBalance(account.getBalance() - comision);
                       }
 
                       // todo set balance
                       double righAmount = currencyGraph.convertCurrency("RON", account.getCurrency(), amount);
-                      account.setBalance(account.getBalance() - righAmount);
+                      account.setBalance(account.getBalance() - righAmount + cashback);
 
                       Transaction transaction = new Transaction(
                               "Cash withdrawal of " + commandInput.getAmount(),
