@@ -61,6 +61,22 @@ public class Transaction {
         this.email = email;
     }
 
+    public Transaction(final List<Double> amountForUsers,
+                       final String currency, final double totalAmount,
+                       final List<String> involvedAccounts,
+                       final String splitPaymentType, final int timestamp,
+                       final String email,
+                       final String error) {
+        this.amountForUsers = amountForUsers;
+        this.currency = currency;
+        this.amount = totalAmount;
+        this.timestamp = timestamp;
+        this.splitPaymentType = splitPaymentType;
+        this.accounts = involvedAccounts;
+        this.email = email;
+        this.errorAccount = error;
+    }
+
     public Transaction(final double amount, final String currency, final String description,
                        final int timestamp, final String email){
         this.amountSpent = amount;
@@ -187,19 +203,34 @@ public class Transaction {
         this.reportIban = reportIban;
     }
 
-    public Transaction(final String description, final double amountSpent, final String currency,
+    public Transaction(final double amountSpent, final String currency,
                        final double amount, final List<String> accounts, final int timestamp,
-                       final String email, final String reportIban, final String errorAccount) {
-        this.description = description;
+                       final String email, final String errorAccount) {
         this.amountSpent = amountSpent;
         this.currency = currency;
         this.amount = amount;
         this.accounts = accounts;
         this.timestamp = timestamp;
         this.email = email;
-        this.reportIban = reportIban;
         this.errorAccount = errorAccount;
     }
+
+    public Transaction(final double amount, final String currency,
+                       final String error, final List<String> accounts,
+                       final String splitPaymentType, final int timestamp,
+                       final String email, final double totalAmount) {
+        this.amountSpent = amount;
+        this.currency = currency;
+        this.errorAccount = error;
+        this.accounts = accounts;
+        this.splitPaymentType = splitPaymentType;
+        this.timestamp = timestamp;
+        this.email = email;
+        this.amount = totalAmount;
+    }
+
+
+
 
     /**
      * Populates the provided `transactionNode` with the details of the transaction.
