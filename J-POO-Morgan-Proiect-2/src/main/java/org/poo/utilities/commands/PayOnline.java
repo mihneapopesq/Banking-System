@@ -23,6 +23,7 @@ public class PayOnline extends CommandBase {
     private final ArrayNode output;
     private final ArrayList<Transaction> transactions;
     private final ArrayList<Commerciant> commerciants;
+    private final ArrayList<BusinessAccount> businessAccounts;
 
     /**
      * Constructs the PayOnline command using the provided builder.
@@ -38,6 +39,7 @@ public class PayOnline extends CommandBase {
         this.output = builder.getOutput();
         this.transactions = builder.getTransactions();
         this.commerciants = builder.getCommerciants();
+        this.businessAccounts = builder.getBusinessAccounts();
     }
 
     /**
@@ -62,6 +64,59 @@ public class PayOnline extends CommandBase {
                 break;
             }
         }
+
+    int payed = 0;
+
+    for(BusinessAccount businessAccount : businessAccounts) {
+        for(User user : businessAccount.getEmployees()) {
+            if(user.getUser().getEmail().equals(commandInput.getEmail())) {
+                for(Card card : businessAccount.getCards()) {
+                    if(card.getCardNumber().equals(commandInput.getCardNumber())) {
+
+                        double ronAmount = currencyGraph.convertCurrency(paymentCurrency, "RON", paymentAmount);
+                        if(ronAmount >= 500) {
+                            return ;
+                        }
+
+
+                        businessAccount.setBalance(businessAccount.getBalance() - paymentAmount);
+                        user.setSpent(user.getSpent() + paymentAmount);
+                        payed = 1;
+                    }
+                }
+            }
+        }
+
+        for(User user : businessAccount.getManagers()) {
+            if(user.getUser().getEmail().equals(commandInput.getEmail())) {
+                for(Card card : businessAccount.getCards()) {
+                    if(card.getCardNumber().equals(commandInput.getCardNumber())) {
+                        businessAccount.setBalance(businessAccount.getBalance() - paymentAmount);
+                        user.setSpent(user.getSpent() + paymentAmount);
+                        payed = 1;
+                    }
+                }
+            }
+        }
+
+        if(businessAccount.getOwnerEmail().equals(commandInput.getEmail())) {
+            for(Card card : businessAccount.getCards()) {
+                if(card.getCardNumber().equals(commandInput.getCardNumber())) {
+                    businessAccount.setBalance(businessAccount.getBalance() - paymentAmount);
+                    for(User user : users) {
+                        if (user.getUser().getEmail().equals(commandInput.getEmail())) {
+                            user.setSpent(user.getSpent() + paymentAmount);
+                        }
+                    }
+                    payed = 1;
+                }
+            }
+        }
+    }
+    if(payed == 1)
+        return;
+
+
 
 
         for (User user : users) {
@@ -88,7 +143,6 @@ public class PayOnline extends CommandBase {
                             if(commerciant.getCommerciant().getCashbackStrategy().equals("spendingThreshold")) {
                                 if(paymentCurrency.equals("RON") && (user.getUserPlan().equals("standard") ||
                                         user.getUserPlan().equals("student"))) {
-//                                    System.out.printf("primu if la tmstp %d\n", commandInput.getTimestamp());
                                     if(paymentAmount >= 100 && paymentAmount < 300) {
                                         cashback = amountInAccountCurrency * 0.001;
                                     } else if(paymentAmount >= 300 && paymentAmount < 500) {

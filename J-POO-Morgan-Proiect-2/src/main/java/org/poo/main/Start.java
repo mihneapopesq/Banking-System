@@ -28,6 +28,7 @@ public class Start {
     private final ArrayList<Transaction> transactions;
     private final ArrayList<Commerciant> commerciants;
     private final ArrayList<PendingSplitPayment> pendingSplitPayments;
+    private final ArrayList<BusinessAccount> businessAccounts;
 
     /**
      * Constructor to initialize the Start class with input data.
@@ -42,6 +43,8 @@ public class Start {
         for (UserInput userInput : inputData.getUsers()) {
             User user = new User();
             user.setUser(userInput);
+            user.setSpent(0);
+            user.setDeposited(0);
             user.setAccounts(new ArrayList<>());
             if(user.getUser().getOccupation().equals("student")) {
                 user.setUserPlan("student");
@@ -53,6 +56,7 @@ public class Start {
         }
 
         commerciants = new ArrayList<>();
+        businessAccounts = new ArrayList<>();
         for (CommerciantInput commerciantInput : inputData.getCommerciants()) {
             Commerciant commerciant = new Commerciant();
             commerciant.getCommerciant().setCommerciant(commerciantInput.getCommerciant());
@@ -99,7 +103,8 @@ public class Start {
                     currencyGraph,
                     transactions,
                     commerciants,
-                    pendingSplitPayments
+                    pendingSplitPayments,
+                    businessAccounts
             );
 
             factory.execute();

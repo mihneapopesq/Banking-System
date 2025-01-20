@@ -17,6 +17,8 @@ public class User {
     private ArrayList<Account> accounts;
     private String userPlan;
     private int paymentsOver300;
+    private double deposited;
+    private double spent;
 
     public User() {
         this.accounts = new ArrayList<>();
@@ -43,5 +45,24 @@ public class User {
         long age = ChronoUnit.YEARS.between(birthDate, LocalDate.now());
 
         return age >= 21 ? 1 : 0;
+    }
+
+    public String getFullNameFromEmail() {
+        if (user == null || user.getEmail() == null) {
+            return "";
+        }
+
+        String email = user.getEmail();
+        String namePart = email.split("@")[0]; // Extract everything before '@'
+        String[] nameParts = namePart.split("_");
+
+        if (nameParts.length != 2) {
+            return ""; // Return empty if format doesn't match expectations
+        }
+
+        String firstName = nameParts[0];
+        String lastName = nameParts[1];
+
+        return lastName + " " + firstName;
     }
 }

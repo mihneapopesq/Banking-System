@@ -1,10 +1,7 @@
 package org.poo.utilities.commands;
 
 import org.poo.fileio.CommandInput;
-import org.poo.utilities.users.Account;
-import org.poo.utilities.users.Card;
-import org.poo.utilities.users.Transaction;
-import org.poo.utilities.users.User;
+import org.poo.utilities.users.*;
 import org.poo.utils.Utils;
 
 import java.util.ArrayList;
@@ -19,6 +16,7 @@ public class CreateCard extends CommandBase {
     private final CommandInput commandInput;
     private final ArrayList<Transaction> transactions;
     private final int isOneTimeCard;
+    private final ArrayList<BusinessAccount> businessAccounts;
 
     /**
      * Constructs the CreateCard command using the provided builder.
@@ -30,6 +28,7 @@ public class CreateCard extends CommandBase {
         this.commandInput = builder.getCommandInput();
         this.transactions = builder.getTransactions();
         this.isOneTimeCard = builder.getIsOneTimeCard();
+        this.businessAccounts = builder.getBusinessAccounts();
     }
 
     /**
@@ -49,10 +48,6 @@ public class CreateCard extends CommandBase {
                         newCard.setStatus("active");
                         newCard.setIsOneTimeCard(isOneTimeCard);
                         newCard.setIsFrozen(0);
-//                        newCard.setCashbackTech(1);
-//                        newCard.setCashbackFood(1);
-//                        newCard.setCashbackClothes(1);
-//                        newCard.setNumberOfTransactions(0);
 
                         Transaction transaction = new Transaction(
                                 "New card created",
@@ -69,6 +64,35 @@ public class CreateCard extends CommandBase {
                         break;
                     }
                 }
+                break;
+            }
+        }
+
+//        System.out.printf("trec de for astfel incat sa creez un card pentru un business account\n");
+
+        if(businessAccounts == null)
+            return;
+
+        for(BusinessAccount account : businessAccounts) {
+            if (account.getIban().equals(commandInput.getAccount())) {
+                Card newCard = new Card();
+                newCard.setCardNumber(Utils.generateCardNumber());
+                newCard.setStatus("active");
+                newCard.setIsOneTimeCard(isOneTimeCard);
+                newCard.setIsFrozen(0);
+
+                Transaction transaction = new Transaction(
+                        "New card created",
+                        commandInput.getTimestamp(),
+                        account.getIban(),
+                        newCard.getCardNumber(),
+                        account.getOwnerEmail(),
+                        account.getOwnerEmail(),
+                        account.getIban()
+                );
+
+                transactions.add(transaction);
+                account.getCards().add(account.getCards().size(), newCard);
                 break;
             }
         }

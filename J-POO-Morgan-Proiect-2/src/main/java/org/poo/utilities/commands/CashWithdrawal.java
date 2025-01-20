@@ -50,40 +50,6 @@ public class CashWithdrawal extends CommandBase{
 
                       System.out.printf("account type ul %s\n", account.getAccountType());
 
-//                      if(account.getAccountPlan().equals("standard") ||
-//                        account.getAccountPlan().equals("student")) {
-//                          System.out.printf("primu if %s\n", account.getAccountType());
-//                          if(amount >= 100 && amount < 300) {
-//                              cashback = amount * 0.001;
-//                          } else if(amount >= 300 && amount < 500) {
-//                              cashback = amount * 0.002;
-//                          } else if(amount >= 500) {
-//                              cashback = amount * 0.0025;
-//                          }
-//                      } else if(account.getAccountPlan().equals("silver")){
-//
-//                          System.out.printf("al doilea if %s\n", account.getAccountType());
-//
-//                          if(amount >= 100 && amount < 300) {
-//                              cashback = amount * 0.003;
-//                          } else if(amount >= 300 && amount < 500) {
-//                              cashback = amount * 0.004;
-//                          } else if(amount >= 500) {
-//                              cashback = amount * 0.005;
-//                          }
-//                      } else if(account.getAccountPlan().equals("gold")){
-//                          System.out.printf("al treilea if %s\n", account.getAccountType());
-//                          if(amount >= 100 && amount < 300) {
-//                              cashback = amount * 0.005;
-//                          } else if(amount >= 300 && amount < 500) {
-//                              cashback = amount * 0.0055;
-//                          } else if(amount >= 500) {
-//                              cashback = amount * 0.007;
-//                          }
-//                      }
-
-//                      cashback = currencyGraph.convertCurrency("RON", account.getCurrency(), cashback);
-
                       if(user.getUserPlan().equals("standard")) {
                           double comision = amount * 0.002;
                           comision = currencyGraph.convertCurrency("RON", account.getCurrency(), comision);

@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.poo.fileio.CommandInput;
-import org.poo.utilities.users.Account;
-import org.poo.utilities.users.CurrencyGraph;
-import org.poo.utilities.users.Transaction;
-import org.poo.utilities.users.User;
+import org.poo.utilities.users.*;
 
 import java.util.ArrayList;
 
@@ -22,6 +19,7 @@ public class SendMoney extends CommandBase {
     private final ObjectNode commandNode;
     private final ObjectMapper objectMapper;
     private final ArrayNode output;
+    private final ArrayList<BusinessAccount> businessAccounts;
 
     /**
      * Constructs the SendMoney command using the provided builder.
@@ -36,6 +34,7 @@ public class SendMoney extends CommandBase {
         this.commandNode = builder.getCommandNode();
         this.objectMapper = builder.getObjectMapper();
         this.output = builder.getOutput();
+        this.businessAccounts = builder.getBusinessAccounts();
 
     }
 
@@ -45,6 +44,30 @@ public class SendMoney extends CommandBase {
      */
     @Override
     public void execute() {
+
+
+        /*
+        * {
+            "command": "sendMoney",
+            "account": "RO65POOB8944016386845896",
+            "amount": 3321.0,
+            "receiver": "RO58POOB7344468893732422",
+            "timestamp": 41,
+            "email": "Christopher_Jones_MD@hotmail.us",
+            "description": "Electricity and internet bills"
+        },
+        *
+        * */
+
+
+        BusinessAccount senderBusinessAccount = null;
+        for (BusinessAccount businessAccount : businessAccounts) {
+            if (businessAccount.getIban().equals(commandInput.getAccount())) {
+                senderBusinessAccount = businessAccount;
+                break;
+            }
+        }
+
         Account senderAccount = null;
         User senderUser = null;
         for (User user : users) {
@@ -70,6 +93,109 @@ public class SendMoney extends CommandBase {
                 }
             }
         }
+
+        if (senderBusinessAccount != null && receiverAccount != null) {
+            boolean isEmployee = false;
+            boolean isManager = false;
+
+            for (User employee : senderBusinessAccount.getEmployees()) {
+                if (employee.getUser().getEmail().equals(commandInput.getEmail())) {
+                    isEmployee = true;
+                    break;
+                }
+            }
+
+            for (User manager : senderBusinessAccount.getManagers()) {
+                if (manager.getUser().getEmail().equals(commandInput.getEmail())) {
+                    isManager = true;
+                    break;
+                }
+            }
+
+            double amount = commandInput.getAmount();
+            double amountInRON = currencyGraph.convertCurrency(senderBusinessAccount.getCurrency(), "RON", amount);
+
+            if (isEmployee && amountInRON > 500) {
+                Transaction transaction = new Transaction(
+                        "Spending limit exceeded",
+                        commandInput.getTimestamp(),
+                        commandInput.getEmail(),
+                        senderBusinessAccount.getIban()
+                );
+                transactions.add(transaction);
+
+                // Adăugăm mesaj de eroare la output
+                ObjectNode errorNode = objectMapper.createObjectNode();
+                errorNode.put("timestamp", commandInput.getTimestamp());
+                errorNode.put("description", "Employees cannot spend more than 500 RON.");
+                commandNode.set("output", errorNode);
+                commandNode.put("command", "sendMoney");
+                commandNode.put("timestamp", commandInput.getTimestamp());
+                output.add(commandNode);
+                return;
+            }
+
+            // Verificăm dacă fondurile sunt suficiente și nu scad sub minimul permis
+            if (senderBusinessAccount.getBalance() < amount ||
+                    senderBusinessAccount.getBalance() - amount < senderBusinessAccount.getMinBalance()) {
+                Transaction transaction = new Transaction(
+                        "Insufficient funds",
+                        commandInput.getTimestamp(),
+                        senderBusinessAccount.getOwnerEmail(),
+                        senderBusinessAccount.getIban()
+                );
+                transactions.add(transaction);
+
+                // Adăugăm mesaj de eroare la output
+                ObjectNode errorNode = objectMapper.createObjectNode();
+                errorNode.put("timestamp", commandInput.getTimestamp());
+                errorNode.put("description", "Insufficient funds or below minimum balance.");
+                commandNode.set("output", errorNode);
+                commandNode.put("command", "sendMoney");
+                commandNode.put("timestamp", commandInput.getTimestamp());
+                output.add(commandNode);
+                return;
+            }
+
+            double convertedAmount = currencyGraph.convertCurrency(
+                    senderBusinessAccount.getCurrency(),
+                    receiverAccount.getCurrency(),
+                    amount
+            );
+
+            senderBusinessAccount.setBalance(senderBusinessAccount.getBalance() - amount);
+            receiverAccount.setBalance(receiverAccount.getBalance() + convertedAmount);
+
+//            Transaction senderTransaction = new Transaction(
+//                    amount,
+//                    senderBusinessAccount.getCurrency(),
+//                    "sent",
+//                    commandInput.getTimestamp(),
+//                    commandInput.getDescription(),
+//                    senderBusinessAccount.getIban(),
+//                    receiverAccount.getIban(),
+//                    senderBusinessAccount.getOwnerEmail(),
+//                    senderBusinessAccount.getIban()
+//            );
+//            transactions.add(senderTransaction);
+//
+//            Transaction receiverTransaction = new Transaction(
+//                    convertedAmount,
+//                    receiverAccount.getCurrency(),
+//                    "received",
+//                    commandInput.getTimestamp(),
+//                    commandInput.getDescription(),
+//                    senderBusinessAccount.getIban(),
+//                    receiverAccount.getIban(),
+//                    receiverUser != null ? receiverUser.getUser().getEmail() : "Unknown",
+//                    receiverAccount.getIban()
+//            );
+//            transactions.add(receiverTransaction);
+            return;
+        }
+
+
+
 
         double amount = commandInput.getAmount();
 
@@ -98,9 +224,9 @@ public class SendMoney extends CommandBase {
             return;
         }
 
-        System.out.printf("la tmstp %d, minbalance %f, balance %f, amount %f\n",
-                commandInput.getTimestamp(), senderAccount.getMinBalance(),
-                senderAccount.getBalance(), amount);
+//        System.out.printf("la tmstp %d, minbalance %f, balance %f, amount %f\n",
+//                commandInput.getTimestamp(), senderAccount.getMinBalance(),
+//                senderAccount.getBalance(), amount);
 
 
 
@@ -130,8 +256,6 @@ public class SendMoney extends CommandBase {
         double amountInRON = currencyGraph.convertCurrency(senderAccount.getCurrency(), "RON", amount);
         if(amountInRON >= 500 && senderUser.getUserPlan().equals("silver")) {
             double comision = amount * 0.001;
-//            double sum = currencyGraph.convertCurrency("RON",
-//                    senderAccount.getCurrency(), comision);
             senderAccount.setBalance(senderAccount.getBalance() - comision);
         }
 

@@ -1,9 +1,7 @@
 package org.poo.utilities.commands;
 
 import org.poo.fileio.CommandInput;
-import org.poo.utilities.users.Transaction;
-import org.poo.utilities.users.User;
-import org.poo.utilities.users.Account;
+import org.poo.utilities.users.*;
 import org.poo.utils.Utils;
 
 import java.util.ArrayList;
@@ -16,6 +14,8 @@ public class AddAccount extends CommandBase {
     private final ArrayList<User> users;
     private final CommandInput commandInput;
     private final ArrayList<Transaction> transactions;
+    private final ArrayList<BusinessAccount> businessAccounts;
+    private final CurrencyGraph currencyGraph;
 
     /**
      * Constructs the AddAccount command using the provided builder.
@@ -26,6 +26,8 @@ public class AddAccount extends CommandBase {
         this.users = builder.getUsers();
         this.commandInput = builder.getCommandInput();
         this.transactions = builder.getTransactions();
+        this.businessAccounts = builder.getBusinessAccounts();
+        this.currencyGraph = builder.getCurrencyGraph();
     }
 
     /**
@@ -46,6 +48,23 @@ public class AddAccount extends CommandBase {
                         0,
                         0
                 );
+
+
+                if(commandInput.getAccountType().equals("business")) {
+                    newAccount.setIsOwner(1);
+
+                    BusinessAccount businessAccount = new BusinessAccount(generatedIBAN, commandInput.getCurrency(),
+                            commandInput.getAccountType(),
+                            commandInput.getInterestRate(), 0, 0, user.getUser().getEmail());
+                    double amount = 500;
+                    double rightAmount = currencyGraph.convertCurrency("RON", commandInput.getCurrency(), amount);
+                    businessAccount.setDepositLimit(rightAmount);
+                    businessAccount.setSpendingLimit(rightAmount);
+
+
+                    businessAccounts.add(businessAccount);
+                    return ;
+                }
 
                 newAccount.setGotClothesCashback(0);
                 newAccount.setGotTechCashback(0);

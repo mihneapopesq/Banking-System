@@ -23,6 +23,7 @@ public class CommandFactory extends CommandBase {
     private final ArrayList<Transaction> transactions;
     private final ArrayList<Commerciant> commerciants;
     private final ArrayList<PendingSplitPayment> pendingSplitPayments;
+    private final ArrayList<BusinessAccount> businessAccounts;
 
     /**
      * Constructs the CommandFactory with the necessary dependencies.
@@ -42,7 +43,8 @@ public class CommandFactory extends CommandBase {
                           final CurrencyGraph currencyGraph,
                           final ArrayList<Transaction> transactions,
                           final ArrayList<Commerciant> commerciants,
-                          final ArrayList<PendingSplitPayment> pendingSplitPayments) {
+                          final ArrayList<PendingSplitPayment> pendingSplitPayments,
+                          final ArrayList<BusinessAccount> businessAccounts) {
         this.commandType = commandType;
         this.users = users;
         this.commandNode = commandNode;
@@ -53,6 +55,7 @@ public class CommandFactory extends CommandBase {
         this.transactions = transactions;
         this.commerciants = commerciants;
         this.pendingSplitPayments = pendingSplitPayments;
+        this.businessAccounts = businessAccounts;
     }
 
     /**
@@ -66,12 +69,12 @@ public class CommandFactory extends CommandBase {
         switch (commandType) {
             case "addAccount":
                 new AddAccount(
-                        new Builder(users, command, transactions)
+                        new Builder(users, command, transactions, businessAccounts, currencyGraph)
                 ).execute();
                 break;
             case "createCard":
                 new CreateCard(
-                        new Builder(users, command, transactions, 0)
+                        new Builder(users, command, transactions, 0, businessAccounts)
                 ).execute();
                 break;
             case "printUsers":
@@ -80,7 +83,9 @@ public class CommandFactory extends CommandBase {
                 ).execute();
                 break;
             case "addFunds":
-                new AddFunds(new Builder(users, command)).execute();
+                new AddFunds(
+                        new Builder(command, businessAccounts, users, currencyGraph)
+                ).execute();
                 break;
             case "deleteAccount":
                 new DeleteAccount(
@@ -106,12 +111,13 @@ public class CommandFactory extends CommandBase {
             case "payOnline":
                 new PayOnline(
                         new Builder(users, command, transactions, currencyGraph,
-                                objectMapper, commandNode, output, commerciants)
+                                objectMapper, commandNode, output, commerciants, businessAccounts)
                 ).execute();
                 break;
             case "sendMoney":
                 new SendMoney(
-                        new Builder(users, command, transactions, currencyGraph, objectMapper, commandNode, output)
+                        new Builder(businessAccounts ,users, command, transactions, currencyGraph,
+                                objectMapper, commandNode, output)
                 ).execute();
                 break;
             case "setAlias":
@@ -177,6 +183,26 @@ public class CommandFactory extends CommandBase {
             case "acceptSplitPayment":
                 new SplitPayment(
                         new Builder(users, command, transactions, currencyGraph, pendingSplitPayments)
+                ).execute();
+                break;
+            case "addNewBusinessAssociate":
+                new AddNewBusinessAssociate(
+                        new Builder(users, command, transactions, businessAccounts)
+                ).execute();
+                break;
+            case "changeSpendingLimit":
+                new ChangeSpendingLimit(
+                        new Builder(users, command, transactions, businessAccounts, objectMapper, output)
+                ).execute();
+                break;
+            case "businessReport":
+                new BusinessReport(
+                        new Builder(command, businessAccounts, users, objectMapper, output)
+                ).execute();
+                break;
+            case "changeDepositLimit":
+                new ChangeDepositLimit(
+                        new Builder(users, command, transactions, businessAccounts, objectMapper, output)
                 ).execute();
                 break;
             default:

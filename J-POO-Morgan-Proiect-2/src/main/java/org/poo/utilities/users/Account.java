@@ -33,6 +33,11 @@ public class Account {
     private int FoodPayments;
     private int ClothesPayments;
     private int TechPayments;
+    private double deposited;
+    private double spent;
+    private int isBusinessAssociate;
+    private int isOwner;
+    private String businessBoss;
 
     /**
      * Constructs an Account with the specified attributes.
